@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Facebook, MessageCircle, ArrowLeft, Send, Check, User, Mail, FileText } from 'lucide-react';
 import { sendContactMessage } from '../lib/supabase';
 
@@ -6,15 +6,21 @@ const FACEBOOK_URL = 'https://facebook.com/vibecode26';
 
 interface ContactPageProps {
   onBackToStore: () => void;
+  /** رسالة مبدئية (مثلاً طلب خدمة تجهيز الثيم) تُملأ تلقائياً في النموذج */
+  initialMessage?: string;
 }
 
-export const ContactPage: React.FC<ContactPageProps> = ({ onBackToStore }) => {
+export const ContactPage: React.FC<ContactPageProps> = ({ onBackToStore, initialMessage = '' }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(initialMessage);
   const [sending, setSending] = useState(false);
   const [formError, setFormError] = useState('');
   const [formSuccess, setFormSuccess] = useState('');
+
+  useEffect(() => {
+    if (initialMessage) setMessage(initialMessage);
+  }, [initialMessage]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

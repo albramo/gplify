@@ -42,9 +42,14 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="bg-[#111c44] rounded-3xl p-6 sm:p-8 border border-slate-700 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
             <div className="space-y-2 text-center md:text-right max-w-lg">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-bold font-mono">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>عروض وكوبونات حصرية</span>
+              <div className="inline-flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-bold font-mono">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span>عروض وكوبونات حصرية</span>
+                </span>
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-amber-400 text-[#0b132b] text-xs font-extrabold">
+                  قريباً
+                </span>
               </div>
               <h3 className="text-xl sm:text-2xl font-extrabold font-tajawal">
                 اشترك لتصلك أحدث ثيمات GPL المخفضة
@@ -62,19 +67,20 @@ export const Footer: React.FC<FooterProps> = ({
                     id="newsletter-email-input"
                     type="email"
                     required
+                    disabled
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full pr-10 pl-4 py-3 text-xs bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-hidden focus:border-white"
+                    className="w-full pr-10 pl-4 py-3 text-xs bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-hidden focus:border-white disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
                 <button
                   id="btn-newsletter-subscribe"
                   type="submit"
-                  disabled={subscribing}
-                  className="px-5 py-3 bg-white hover:bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl transition cursor-pointer shrink-0"
+                  disabled
+                  className="px-5 py-3 bg-white hover:bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl transition cursor-pointer shrink-0 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {subscribing ? 'جاري...' : 'اشتراك'}
+                  قريباً
                 </button>
               </form>
 

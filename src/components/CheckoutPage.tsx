@@ -16,6 +16,7 @@ import { CartItem, Coupon, Order } from '../types';
 import { saveOrder } from '../lib/supabase';
 import { isValidEmail, sanitizeName, normalizePhone, safeUrl } from '../lib/security';
 import { formatCurrency } from './ThemeCard';
+import { ThemeSetupService } from './ThemeSetupService';
 
 interface CheckoutPageProps {
   items: CartItem[];
@@ -23,6 +24,8 @@ interface CheckoutPageProps {
   onBackToCart: () => void;
   onOrderSuccess: (order: Order) => void;
   initialEmail?: string;
+  /** طلب خدمة تجهيز الثيم (يفتح صفحة التواصل برسالة جاهزة) */
+  onRequestSetup?: () => void;
 }
 
 export const CheckoutPage: React.FC<CheckoutPageProps> = ({
@@ -31,6 +34,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   onBackToCart,
   onOrderSuccess,
   initialEmail = '',
+  onRequestSetup,
 }) => {
   const [email, setEmail] = useState(initialEmail);
   const [name, setName] = useState('');
@@ -389,6 +393,11 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                 </span>
               </div>
             </div>
+
+            {/* خدمة تجهيز الثيم — تحت ملخص الطلب */}
+            {onRequestSetup ? (
+              <ThemeSetupService variant="compact" onRequestSetup={onRequestSetup} />
+            ) : null}
           </div>
         </form>
       </div>

@@ -31,6 +31,7 @@ import { GPLTheme } from '../types';
 import { isSafeHttpUrl, safeUrl } from '../lib/security';
 import { themeCategories, themePlatforms, badgeLabelAr, themeHasLicense } from '../lib/store';
 import { formatCurrency, ThemeCard } from './ThemeCard';
+import { ThemeSetupService } from './ThemeSetupService';
 import { setProductHead, toISODate } from '../lib/seo';
 import { mergeThemeFaq } from '../lib/themeSeo';
 
@@ -44,6 +45,8 @@ interface ProductDetailPageProps {
   themes?: GPLTheme[];
   onSelectTheme?: (theme: GPLTheme) => void;
   isInCartById?: (themeId: string) => boolean;
+  /** طلب خدمة تجهيز الثيم (يفتح صفحة التواصل برسالة جاهزة) */
+  onRequestSetup?: () => void;
 }
 
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
@@ -55,6 +58,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   themes = [],
   onSelectTheme,
   isInCartById,
+  onRequestSetup,
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'features' | 'changelog' | 'faq' | 'license'>('overview');
   const [selectedScreenshotIndex, setSelectedScreenshotIndex] = useState(0);
@@ -720,6 +724,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             </div>
           </div>
         </div>
+
+        {/* خدمة تجهيز الثيم — قبل الثيمات المرشحة */}
+        {onRequestSetup ? (
+          <ThemeSetupService
+            variant="compact"
+            themeTitle={theme.title}
+            onRequestSetup={onRequestSetup}
+          />
+        ) : null}
 
         {/* Related Themes — بحد أقصى 4 ثيمات أخرى من المتجر */}
         {relatedThemes.length > 0 && onSelectTheme ? (

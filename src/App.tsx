@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { HomeSeoSections } from './components/HomeSeoSections';
+import { ThemeSetupService } from './components/ThemeSetupService';
 import { CategoryFilter } from './components/CategoryFilter';
 import { ThemeCard, formatCurrency } from './components/ThemeCard';
 import { Footer } from './components/Footer';
@@ -217,6 +218,18 @@ export default function App() {
 
   // Modals
   const [isGPLModalOpen, setIsGPLModalOpen] = useState(false);
+
+  // خدمة تجهيز الثيم: رسالة جاهزة تُملأ في صفحة التواصل عند طلب الخدمة
+  const [contactDraft, setContactDraft] = useState('');
+
+  const handleRequestSetup = (themeTitle?: string) => {
+    setContactDraft(
+      `أهلاً، محتاج خدمة تجهيز الثيم${themeTitle ? ` (${themeTitle})` : ''} على الموقع/المتجر بتاعي.\nرابط الموقع: \nالتفاصيل المطلوبة: `
+    );
+    setCurrentView('contact');
+    pushUrl('/contact');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Toast notification
   const [toastMessage, setToastMessage] = useState<{ title: string; subtitle?: string } | null>(null);
@@ -567,6 +580,9 @@ export default function App() {
               </div>
             </section>
 
+            {/* خدمة تجهيز الثيم — بانر منفصل بعد بانر التسليم */}
+            <ThemeSetupService variant="banner" onRequestSetup={() => handleRequestSetup()} />
+
             {/* SEO: محتوى عربي غني بالكلمات المفتاحية + FAQ */}
             <HomeSeoSections themesCount={themes.length} />
           </div>
@@ -574,7 +590,7 @@ export default function App() {
 
         {/* VIEW: CONTACT (/contact) */}
         {currentView === 'contact' && (
-          <ContactPage onBackToStore={() => handleNavigate('catalog')} />
+          <ContactPage onBackToStore={() => handleNavigate('catalog')} initialMessage={contactDraft} />
         )}
 
         {/* VIEW: POLICIES (/terms + /privacy) */}
@@ -635,6 +651,7 @@ export default function App() {
             themes={themes}
             onSelectTheme={(t) => handleNavigate('product', t.id)}
             isInCartById={(id) => cart.some((item) => item.theme.id === id)}
+            onRequestSetup={() => handleRequestSetup(currentSelectedTheme.title)}
           />
         )}
         {currentView === 'product' && !currentSelectedTheme && (
@@ -676,6 +693,7 @@ export default function App() {
             items={cart}
             appliedCoupon={appliedCoupon}
             onBackToCart={() => handleNavigate('cart')}
+            onRequestSetup={() => handleRequestSetup()}
             onOrderSuccess={(order) => {
               setLastOrder(order);
               setCart([]);
