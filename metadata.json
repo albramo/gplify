@@ -1,0 +1,6 @@
+{
+  "name": "GPL Themes Store",
+  "description": "متجر راقي وبسيط لشراء وتحميل ثيمات وقوالب GPL الأصلية مع تسليم فوري للملفات عبر البريد الإلكتروني وتكامل سوبابيز.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

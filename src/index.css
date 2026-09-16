@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+/*
+ * GPLify — Simple & Elegant Design Tokens
+ * Style: Minimalism & Swiss Style (ui-ux-pro-max: Minimal & Direct)
+ * Palette: White #FFFFFF / Navy #0B132B / Slate neutrals only
+ * Type: Tajawal (Arabic) + Plus Jakarta Sans (Latin digits)
+ */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'Tajawal', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #f8fafc;
+    color: #0b132b;
+    font-size: 16px;
+    line-height: 1.7;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-y: contain;
+  }
+
+  /* Readable line length for prose (65–75ch) */
+  p {
+    overflow-wrap: break-word;
+  }
+
+  /* Visible keyboard focus on EVERY interactive element (WCAG 2.4.7) */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid #0b132b;
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* Faster tap response on mobile, no 300ms delay */
+  :where(a, button) {
+    touch-action: manipulation;
+  }
+
+  /* Prevent iOS auto-zoom on form fields (min 16px) */
+  @media (max-width: 768px) {
+    :where(input, select, textarea) {
+      font-size: 16px;
+    }
+  }
+
+  ::selection {
+    background: #0b132b;
+    color: #fff;
+  }
+}
+
+/* Elegant prose container: limits line length for readability */
+@layer components {
+  .prose-elegant {
+    max-width: 70ch;
+  }
+}
+
+/* Hide native scrollbars on horizontal pill rows (mobile) — keeps scroll, removes grey bar */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Respect users who prefer reduced motion (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Custom minimal scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a10;
+}
+::-webkit-scrollbar-thumb {
+  background: #0f172a40;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0f172a70;
+}
