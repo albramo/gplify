@@ -470,6 +470,16 @@ export default function App() {
     })();
   }, [currentView, currentSelectedTheme]);
 
+  // GA4 SPA pageviews — gtag.js loaded in index.html; pushState nav needs manual tracking
+  useEffect(() => {
+    (async () => {
+      try {
+        const { trackPageView } = await import('./lib/analytics');
+        trackPageView(window.location.pathname);
+      } catch {}
+    })();
+  }, [currentView, currentSelectedTheme]);
+
   return (
     <div className="min-h-screen flex flex-col bg-[#f8fafc] text-[#0b132b] font-tajawal antialiased">
       {/* Top Navbar */}
