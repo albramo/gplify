@@ -305,6 +305,33 @@ async function main() {
     mkdirSync(shopifyDir, { recursive: true });
     writeFileSync(join(shopifyDir, 'index.html'), shopifyHtml);
 
+    // ---- SPA shell pages: نسخة static لكل route مالوش prerender مخصص ----
+    // /catalog و /shopify شغالين مباشرة لأن ليهم ملف dist/*/index.html، لكن
+    // /admin122 و /cart و /checkout و /contact و /download كانوا بيعتمدوا على
+    // الـ rewrites فقط → 404 لو الـ rewrite متحملش في الـ deployment.
+    // توليد shell (نفس bundle الـ SPA + noindex) بيخليهم يشتغلوا دايماً.
+    const spaShells = [
+      { slug: 'admin122', title: 'لوحة التحكم | gplify', desc: 'لوحة تحكم متجر gplify.' },
+      { slug: 'cart', title: 'سلة التسوق | gplify', desc: 'سلة التسوق — راجع قوالب GPL قبل إتمام الطلب.' },
+      { slug: 'checkout', title: 'إتمام الطلب | gplify', desc: 'إتمام طلب قوالب GPL — تسليم فوري لملفات ZIP عبر البريد الإلكتروني.' },
+      { slug: 'contact', title: 'تواصل معنا | gplify', desc: 'تواصل مع gplify عبر صفحة الفيسبوك الرسمية للاستفسارات والدعم الفني.' },
+      { slug: 'download', title: 'تحميل ملفك | gplify', desc: 'تحميل ملفك من gplify — رابط آمن لمرة واحدة.' },
+    ];
+    for (const s of spaShells) {
+      const shellHtml = template
+        .replace(/<title>[^<]*<\/title>/, `<title>${esc(s.title)}</title>`)
+        .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(s.desc)}$2`)
+        .replace(
+          '</head>',
+          `<meta name="robots" content="noindex, nofollow">\n`
+          + `    <link rel="canonical" href="${esc(SITE_URL)}/${esc(s.slug)}">\n`
+          + `  </head>`
+        );
+      const shellDir = join(DIST, s.slug);
+      mkdirSync(shellDir, { recursive: true });
+      writeFileSync(join(shellDir, 'index.html'), shellHtml);
+    }
+
     // ---- صفحتا السياسات: نسخة ثابتة لكل واحدة + sitemap ----
     const policies = [
       {
