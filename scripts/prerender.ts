@@ -49,27 +49,29 @@ async function main() {
   }
   const template = readFileSync(templatePath, 'utf8');
 
+  // NOTE: never fail the build — without Supabase keys (or on fetch error)
+  // we still ship the SPA + base SEO files; theme pages are skipped gracefully.
   const url = process.env.VITE_SUPABASE_URL ?? '';
   const key = process.env.VITE_SUPABASE_ANON_KEY ?? '';
+  let rows: Record<string, any>[] = [];
   if (!url || !key) {
-    console.error('Missing VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY in .env — skipping prerender.');
-    process.exit(1);
+    console.warn('Missing VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY — skipping theme prerender (base SEO files only).');
+  } else {
+    const supabase = createClient(url, key);
+    const { data, error } = await supabase
+      .from('themes')
+      .select(
+        'slug,title,title_en,short_description,description,thumbnail,category_name_ar,platform,price,original_price,rating,reviews_count,downloads_count,version,updated_date,created_at,updated_at,features,tags,faq,gpl_license_type'
+      )
+      .eq('is_active', true);
+
+    if (error) {
+      console.warn('Prerender fetch failed:', error.message, '— continuing with base SEO files.');
+    } else {
+      rows = (data ?? []) as Record<string, any>[];
+    }
   }
 
-  const supabase = createClient(url, key);
-  const { data, error } = await supabase
-    .from('themes')
-    .select(
-      'slug,title,title_en,short_description,description,thumbnail,category_name_ar,platform,price,original_price,rating,reviews_count,downloads_count,version,updated_date,created_at,updated_at,features,tags,faq,gpl_license_type'
-    )
-    .eq('is_active', true);
-
-  if (error) {
-    console.error('Prerender fetch failed:', error.message);
-    process.exit(1);
-  }
-
-  const rows = (data ?? []) as Record<string, any>[];
   let count = 0;
   const sitemapUrls: { loc: string; lastmod: string | null; priority: string; changefreq: string }[] = [
     { loc: `${SITE_URL}/`, lastmod: new Date().toISOString(), priority: '1.0', changefreq: 'daily' },
