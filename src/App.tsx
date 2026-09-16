@@ -43,7 +43,9 @@ const CheckoutPage = lazy(() => import('./components/CheckoutPage').then(m => ({
 const OrderSuccessModal = lazy(() => import('./components/OrderSuccessModal').then(m => ({ default: m.OrderSuccessModal })));
 const DownloadPage = lazy(() => import('./components/DownloadPage').then(m => ({ default: m.DownloadPage })));
 const CatalogPage = lazy(() => import('./components/CatalogPage').then(m => ({ default: m.CatalogPage })));
+const ShopifyPage = lazy(() => import('./components/ShopifyPage').then(m => ({ default: m.ShopifyPage })));
 const ContactPage = lazy(() => import('./components/ContactPage').then(m => ({ default: m.ContactPage })));
+const PoliciesPage = lazy(() => import('./components/PoliciesPage').then(m => ({ default: m.PoliciesPage })));
 const GPLInfoModal = lazy(() => import('./components/GPLInfoModal').then(m => ({ default: m.GPLInfoModal })));
 const AdminPanel = lazy(() => import('./components/AdminPanel').then(m => ({ default: m.AdminPanel })));
 
@@ -57,13 +59,16 @@ function isAdminRoute() {
   return path === '/admin122' || window.location.hash === '#/admin122';
 }
 
-type StoreView = 'home' | 'catalog' | 'contact' | 'product' | 'cart' | 'checkout' | 'order-success' | 'download';
+type StoreView = 'home' | 'catalog' | 'shopify' | 'contact' | 'terms' | 'privacy' | 'product' | 'cart' | 'checkout' | 'order-success' | 'download';
 
 function parseRoute(): { view: StoreView; slug?: string } {
   const path = window.location.pathname.replace(/\/+$/, '').toLowerCase() || '/';
   if (path === '/download') return { view: 'download' };
   if (path === '/catalog') return { view: 'catalog' };
+  if (path === '/shopify') return { view: 'shopify' };
   if (path === '/contact') return { view: 'contact' };
+  if (path === '/terms') return { view: 'terms' };
+  if (path === '/privacy') return { view: 'privacy' };
   if (path === '/cart') return { view: 'cart' };
   if (path === '/checkout') return { view: 'checkout' };
   const m = path.match(/^\/theme\/([^/]+)$/);
@@ -410,28 +415,41 @@ export default function App() {
         if (currentView === 'catalog') {
           setStaticHead({
             title: 'تحميل قوالب GPL | كتالوج ثيمات ووردبريس وشوبيفاي الأصلية - gplify',
-            description: 'تصفح كتالوج قوالب GPL الأصلية: ثيمات ووردبريس GPL، قوالب ووكومرس، ثيمات شوبيفاي — معاينة حية وتحميل فوري بترخيص GPL قانوني.',
+            description: 'تصفح كتالوج قوالب GPL الأصلية: ثيمات ووردبريس GPL، قوالب ووكومرس، ثيمات شوبيفاي GPL وقوالب Shopify — معاينة حية وتحميل فوري بترخيص GPL قانوني.',
             path: '/catalog',
+          });
+        } else if (currentView === 'shopify') {
+          setStaticHead({
+            title: 'ثيمات شوبيفاي GPL | تحميل قوالب Shopify الأصلية بسعر مخفض - gplify',
+            description: 'تحميل ثيمات شوبيفاي وقوالب Shopify الأصلية بنسخ نظيفة بسعر رخيص بديل النسخ المجانية — تسليم فوري عبر البريد والدفع فودافون كاش وانستاباي.',
+            path: '/shopify',
           });
         } else if (currentView === 'cart') {
           setStaticHead({ title: 'سلة التسوق | gplify', description: 'سلة التسوق — راجع قوالب GPL قبل إتمام الطلب.', path: '/cart' });
         } else if (currentView === 'contact') {
           setStaticHead({ title: 'تواصل معنا | gplify', description: 'تواصل مع gplify عبر صفحة الفيسبوك الرسمية للاستفسارات والدعم الفني.', path: '/contact' });
+        } else if (currentView === 'terms') {
+          setStaticHead({ title: 'شروط الاستخدام | gplify', description: 'شروط استخدام متجر gplify: الترخيص والتسليم الرقمي والدفع والاسترداد.', path: '/terms' });
+        } else if (currentView === 'privacy') {
+          setStaticHead({ title: 'سياسة الخصوصية | gplify', description: 'سياسة الخصوصية لمتجر gplify: البيانات التي نجمعها وكيف نستخدمها وحقوقك.', path: '/privacy' });
         } else if (currentView === 'checkout') {
           setStaticHead({ title: 'إتمام الطلب | gplify', description: 'إتمام طلب قوالب GPL — تسليم فوري لملفات ZIP عبر البريد الإلكتروني.', path: '/checkout' });
         } else if (currentView === 'download') {
           setStaticHead({ title: 'تحميل ملفك | gplify', description: 'تحميل ملفك من gplify — رابط آمن لمرة واحدة.', path: '/download' });
         } else {
           setStaticHead({
-            title: 'تحميل قوالب GPL الأصلية | متجر ثيمات ووردبريس وشوبيفاي GPL بالعربي - gplify',
-            description: 'gplify أفضل متجر عربي لتحميل قوالب GPL الأصلية: ثيمات ووردبريس GPL، قوالب ووكومرس، ثيمات شوبيفاي بترخيص قانوني وتسليم فوري.',
+            title: 'ثيمات شوبيفاي | تحميل قوالب Shopify الأصلية بسعر مخفض - gplify',
+            description: 'تحميل ثيمات شوبيفاي وقوالب Shopify الأصلية، وثيمات ووردبريس وقوالب ووكومرس — نسخ نظيفة 100% وتسليم فوري عبر البريد بالجنيه المصري.',
             path: '/',
           });
         }
       } catch {
         if (currentView === 'catalog') document.title = 'تحميل قوالب GPL | كتالوج ثيمات ووردبريس وشوبيفاي - gplify';
+        else if (currentView === 'shopify') document.title = 'ثيمات شوبيفاي GPL | تحميل قوالب شوبيفاي وقوالب Shopify - gplify';
         else if (currentView === 'cart') document.title = 'سلة التسوق | gplify';
         else if (currentView === 'contact') document.title = 'تواصل معنا | gplify';
+        else if (currentView === 'terms') document.title = 'شروط الاستخدام | gplify';
+        else if (currentView === 'privacy') document.title = 'سياسة الخصوصية | gplify';
         else if (currentView === 'checkout') document.title = 'إتمام الطلب | gplify';
         else if (currentView === 'download') document.title = 'تحميل ملفك | gplify';
         else document.title = 'تحميل قوالب GPL الأصلية | متجر ثيمات ووردبريس GPL بالعربي - gplify';
@@ -527,10 +545,10 @@ export default function App() {
                     <span>آلية التسليم الرقمي الفوري</span>
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-extrabold font-tajawal">
-                    كيف تستلم ملفات الثيمات وتحديثاتها؟
+                    كيف تستلم ملفات الثيمات؟
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                    بمجرد كتابة بريدك الإلكتروني وإتمام الطلب في صفحة الشيك أوت، يرسل النظام تلقائياً رسالة تأكيد تتضمن: روابط التحميل المباشرة لملفات الـ ZIP الأصلية، مع ترخيص GPL v3، ودليل التثبيت خطوة بخطوة.
+                    بمجرد كتابة بريدك الإلكتروني وإتمام الطلب في صفحة الشيك أوت، يرسل النظام تلقائياً رسالة تأكيد تتضمن: روابط التحميل المباشرة لملفات الـ ZIP الأصلية زي ما هي من المصدر بدون أي تعديل، مع ترخيص GPL v3.
                   </p>
                 </div>
 
@@ -559,6 +577,14 @@ export default function App() {
           <ContactPage onBackToStore={() => handleNavigate('catalog')} />
         )}
 
+        {/* VIEW: POLICIES (/terms + /privacy) */}
+        {currentView === 'terms' && (
+          <PoliciesPage policy="terms" onBackToStore={() => handleNavigate('home')} />
+        )}
+        {currentView === 'privacy' && (
+          <PoliciesPage policy="privacy" onBackToStore={() => handleNavigate('home')} />
+        )}
+
         {/* VIEW 2: FULL CATALOG (/catalog) */}
         {currentView === 'catalog' && (
           <CatalogPage
@@ -580,6 +606,21 @@ export default function App() {
             onResetFilters={resetFilters}
             categories={settings.categories}
             platforms={settings.platforms}
+          />
+        )}
+
+        {/* VIEW: SHOPIFY LANDING (/shopify) — صفحة هبوط لكلمات ثيمات شوبيفاي */}
+        {currentView === 'shopify' && (
+          <ShopifyPage
+            themes={themes.filter((t) => themePlatforms(t).some((p) => p.toLowerCase() === 'shopify'))}
+            themesLoading={themesLoading}
+            storeConnected={storeConnected}
+            themesError={themesError}
+            onRetry={loadStoreData}
+            onSelectTheme={(t) => handleNavigate('product', t.id)}
+            onAddToCart={handleAddToCart}
+            onInstantBuy={handleInstantBuy}
+            isInCart={(id) => cart.some((item) => item.theme.id === id)}
           />
         )}
 

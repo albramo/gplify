@@ -5,6 +5,8 @@
  * Google, AIanswer engines reading DOM after hydrate).
  */
 
+import { mergeThemeFaq } from './themeSeo';
+
 const SITE_URL = 'https://gplify.vercel.app';
 const DEFAULT_OG = `${SITE_URL}/og-cover.jpg`;
 
@@ -59,6 +61,7 @@ export interface ThemeSeo {
   thumbnail?: string;
   categoryNameAr?: string;
   platform?: string;
+  gplLicenseType?: string;
   price?: number;
   rating?: number;
   reviewsCount?: number;
@@ -71,8 +74,17 @@ export interface ThemeSeo {
 
 export function setProductHead(t: ThemeSeo) {
   const canonical = `${SITE_URL}/theme/${t.slug}`;
-  const pageTitle = `تحميل ${t.title} GPL الأصلي | ${t.categoryNameAr || 'قوالب ووردبريس'} - gplify`;
-  const desc = (`تحميل ${t.title} ${t.titleEn ? `(${t.titleEn}) ` : ''}الأصلي برخصة GPL - ${t.shortDescription || t.description || 'ملفات نظيفة وتسليم فوري.'}`).slice(0, 160);
+  const licensed = Boolean((t.gplLicenseType || '').trim());
+  const isShopify = (t.platform || '').toLowerCase().includes('shopify');
+  const pageTitle = !licensed
+    ? `تحميل ${t.title} | ${t.categoryNameAr || 'قوالب ووردبريس'} - gplify`
+    : isShopify
+      ? `تحميل ${t.title} شوبيفاي GPL الأصلي | ${t.categoryNameAr || 'قوالب شوبيفاي'} - gplify`
+      : `تحميل ${t.title} GPL الأصلي | ${t.categoryNameAr || 'قوالب ووردبريس'} - gplify`;
+  const desc = (!licensed
+    ? `تحميل ${t.title} ${t.titleEn ? `(${t.titleEn}) ` : ''}(بدون رخصة — يُباع بحالته) - ${t.shortDescription || t.description || 'تسليم فوري عبر البريد.'}`
+    : `تحميل ${t.title} ${t.titleEn ? `(${t.titleEn}) ` : ''}الأصلي برخصة GPL - ${t.shortDescription || t.description || 'ملفات نظيفة وتسليم فوري.'}`
+  ).slice(0, 160);
   const ogImage = t.thumbnail && /^https?:\/\//i.test(t.thumbnail) ? t.thumbnail : DEFAULT_OG;
   const publishedISO = toISODate(t.createdAt);
   const modifiedISO = toISODate(t.updatedAt) || toISODate(t.updatedDate);
@@ -87,7 +99,7 @@ export function setProductHead(t: ThemeSeo) {
   upsertMeta('property', 'og:type', 'product');
   upsertMeta('property', 'og:url', canonical);
   upsertMeta('property', 'og:image', ogImage);
-  upsertMeta('property', 'og:image:alt', `تحميل قالب ${t.title} GPL الأصلي - معاينة القالب`);
+  upsertMeta('property', 'og:image:alt', `تحميل قالب ${t.title}${licensed ? ' GPL' : ''} الأصلي - معاينة القالب`);
   upsertMeta('name', 'twitter:card', 'summary_large_image');
   upsertMeta('name', 'twitter:title', pageTitle);
   upsertMeta('name', 'twitter:description', desc);
@@ -129,13 +141,14 @@ export function setProductHead(t: ThemeSeo) {
       { '@type': 'ListItem', position: 3, name: t.title, item: canonical },
     ],
   });
-  // FAQ Schema لصفحات المنتجات — يزود فرص Featured Snippets
-  if (t.faq && t.faq.length > 0) {
+  // FAQ Schema لصفحات المنتجات — أسئلة الثيم + أسئلة تلقائية (مجاني/سعر/تثبيت)
+  const mergedFaq = mergeThemeFaq(t.faq, t.title, t.platform, 5, licensed);
+  if (mergedFaq.length > 0) {
     upsertJsonLd('faq', {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
       inLanguage: 'ar',
-      mainEntity: t.faq.slice(0, 5).map((f) => ({
+      mainEntity: mergedFaq.map((f) => ({
         '@type': 'Question',
         name: f.question,
         acceptedAnswer: { '@type': 'Answer', text: f.answer },

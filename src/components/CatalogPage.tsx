@@ -146,10 +146,10 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <div className="pb-4 border-b border-slate-200">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0b132b] font-tajawal">
-          تحميل قوالب GPL | كتالوج ثيمات ووردبريس وشوبيفاي الأصلية
+          كتالوج القوالب | ثيمات شوبيفاي وووردبريس الأصلية
         </h1>
         <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-          تصفح كافة قوالب GPL الأصلية: ثيمات ووردبريس GPL، قوالب ووكومرس للمتاجر، ثيمات شوبيفاي — مع معاينة حية وتحميل فوري بعد الشراء بترخيص GPL قانوني لعدد غير محدود من المواقع.
+          تصفح كافة القوالب الأصلية: <a href="/shopify" className="font-bold text-[#1e3a8a] hover:underline">ثيمات شوبيفاي وقوالب Shopify</a>، ثيمات ووردبريس، قوالب ووكومرس للمتاجر — مع معاينة حية وتحميل فوري بعد الشراء برخصة قانونية لعدد غير محدود من المواقع.
         </p>
       </div>
 

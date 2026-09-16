@@ -15,6 +15,7 @@ import {
 import { CartItem, Coupon } from '../types';
 import { sanitizeCouponCode, MAX_COUPON_LEN, safeUrl } from '../lib/security';
 import { formatCurrency } from './ThemeCard';
+import { themeHasLicense } from '../lib/store';
 
 interface CartPageProps {
   items: CartItem[];
@@ -44,6 +45,8 @@ export const CartPage: React.FC<CartPageProps> = ({
   const subtotal = items.reduce((sum, item) => sum + item.price, 0);
   const discountAmount = appliedCoupon ? Math.round((subtotal * appliedCoupon.discountPercent) / 100) : 0;
   const total = Math.max(0, subtotal - discountAmount);
+  // لو السلة فيها منتج بدون رخصة — لا ندعي أن الكل مرخص
+  const allLicensed = items.every((item) => themeHasLicense(item.theme));
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,7 +81,7 @@ export const CartPage: React.FC<CartPageProps> = ({
         </div>
         <h2 className="text-2xl font-bold text-[#0b132b] mb-2 font-tajawal">سلة التسوق فارغة حالياً</h2>
         <p className="text-sm text-slate-500 max-w-md mb-6 leading-relaxed">
-          لم تقم بإضافة أي قوالب إلى سلتك بعد. تصفح أحدث ثيمات ووردبريس وووكومرس الأصلية بترخيص GPL بأسعار مخفضة.
+          لم تقم بإضافة أي قوالب إلى سلتك بعد. تصفح أحدث الثيمات الأصلية بأسعار مخفضة.
         </p>
         <button
           id="btn-cart-empty-shop"
@@ -102,7 +105,7 @@ export const CartPage: React.FC<CartPageProps> = ({
               سلة التسوق ({items.length} {items.length === 1 ? 'قالب' : 'قوالب'})
             </h1>
             <p className="text-xs text-slate-500 mt-1">
-              جميع الثيمات تشمل ترخيص GPL للاستخدام على مواقع غير محدودة مع تسليم فوري بالبريد.
+              التسليم فوري بالبريد لجميع الملفات بعد تأكيد الدفع.
             </p>
           </div>
 
@@ -144,10 +147,12 @@ export const CartPage: React.FC<CartPageProps> = ({
                       <h3 className="text-sm sm:text-base font-bold text-[#0b132b] line-clamp-1">
                         {item.theme.title}
                       </h3>
-                      <p className="text-[11px] text-slate-500 flex items-center gap-1">
-                        <ShieldCheck className="w-3.5 h-3.5 text-[#1e3a8a]" />
-                        <span>ترخيص GPL v3 - استخدام غير محدود</span>
-                      </p>
+                      {themeHasLicense(item.theme) && (
+                        <p className="text-[11px] text-slate-500 flex items-center gap-1">
+                          <ShieldCheck className="w-3.5 h-3.5 text-[#1e3a8a]" />
+                          <span>ترخيص {item.theme.gplLicenseType} - استخدام غير محدود</span>
+                        </p>
+                      )}
                     </div>
                   </div>
 

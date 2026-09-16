@@ -29,9 +29,10 @@ import {
 } from 'lucide-react';
 import { GPLTheme } from '../types';
 import { isSafeHttpUrl, safeUrl } from '../lib/security';
-import { themeCategories, themePlatforms, badgeLabelAr } from '../lib/store';
+import { themeCategories, themePlatforms, badgeLabelAr, themeHasLicense } from '../lib/store';
 import { formatCurrency, ThemeCard } from './ThemeCard';
 import { setProductHead, toISODate } from '../lib/seo';
+import { mergeThemeFaq } from '../lib/themeSeo';
 
 interface ProductDetailPageProps {
   theme: GPLTheme;
@@ -121,6 +122,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       thumbnail: theme.thumbnail,
       categoryNameAr: theme.categoryNameAr,
       platform: theme.platform,
+      gplLicenseType: theme.gplLicenseType,
       price: theme.price,
       rating: theme.rating,
       reviewsCount: theme.reviewsCount,
@@ -135,10 +137,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   // تواريخ آلية للزاحفات (مهارة seo-geo: المحتوى الأحدث أولوية ~3x)
   const publishedISO = toISODate(theme.createdAt);
   const modifiedISO = toISODate(theme.updatedAt) || toISODate(theme.updatedDate);
-  // فقرة تعريفية مقتبسة (نمط "ما هو X؟" للاقتباس في إجابات AI)
-  const geoIntro = `ما هو ${theme.title}؟ ${theme.shortDescription || theme.description || ''} قالب ${theme.categoryNameAr || ''} لمنصة ${theme.platform || 'WordPress'} بالإصدار v${theme.version || ''} مع ترخيص GPL وتسليم فوري عبر البريد الإلكتروني.`;
+  // فقرة تعريفية مقتبسة (نمط "ما هو X؟" للاقتباس في إجابات AI) — بدون ادعاء ترخيص لمنتج بلا رخصة
+  const licensed = themeHasLicense(theme);
+  const geoIntro = `ما هو ${theme.title}؟ ${theme.shortDescription || theme.description || ''} قالب ${theme.categoryNameAr || ''} لمنصة ${theme.platform || 'WordPress'} بالإصدار v${theme.version || ''}${licensed ? ' مع ترخيص GPL' : ' بدون رخصة (يُباع بحالته)'} وتسليم فوري عبر البريد الإلكتروني.`;
 
   const discountPercent = Math.round(((theme.originalPrice - theme.price) / theme.originalPrice) * 100);
+
+  // أسئلة الثيم + أسئلة تلقائية (مجاني/سعر/تثبيت) — نفس اللي في سكيما جوجل
+  const displayFaq = useMemo(
+    () => mergeThemeFaq(theme.faq, theme.title, theme.platform, 6, licensed),
+    [theme]
+  );
 
   // ثيمات أخرى: نفس التصنيف أولاً ثم نفس المنصة — بحد أقصى 4 ثيمات (بدون الثيم الحالي).
   const relatedThemes = useMemo(() => {
@@ -552,7 +561,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   <div className="space-y-4">
                     <h3 className="text-base font-bold text-[#0b132b]">الأسئلة الأكثر تكراراً عن هذا القالب:</h3>
                     <div className="space-y-3">
-                      {theme.faq.map((item, idx) => (
+                      {displayFaq.map((item, idx) => (
                         <div key={idx} className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
                           <h4 className="text-sm font-bold text-[#0b132b] flex items-center gap-2">
                             <HelpCircle className="w-4 h-4 text-[#1e3a8a]" />
@@ -688,11 +697,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               <div className="space-y-2 pt-4 border-t border-slate-100 text-xs text-slate-600">
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>استخدام غير محدود لجميع الدومينات والمواقع</span>
+                  {licensed ? (
+                    <span>استخدام غير محدود لجميع الدومينات والمواقع</span>
+                  ) : (
+                    <span>تسليم رقمي فوري للملفات على بريدك بعد الدفع</span>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>تحديثات مستمرة ومجانية للملفات</span>
+                  <span>ملفات أصلية كاملة بدون نقص أو حذف</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />

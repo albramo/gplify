@@ -19,7 +19,7 @@ import { formatCurrency } from './ThemeCard';
 interface NavbarProps {
   cartCount: number;
   onOpenCart: () => void;
-  onNavigate: (view: 'home' | 'catalog' | 'contact' | 'cart' | 'checkout' | 'product' | 'download' | 'order-success', themeId?: string) => void;
+  onNavigate: (view: 'home' | 'catalog' | 'shopify' | 'contact' | 'terms' | 'privacy' | 'cart' | 'checkout' | 'product' | 'download' | 'order-success', themeId?: string) => void;
   onOpenGPLInfo: () => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
@@ -123,7 +123,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     const q = searchQuery.trim();
     if (!q) return null;
     return (
-      <div className="absolute top-full mt-2 right-0 left-0 bg-white border border-slate-200 rounded-none shadow-xl overflow-hidden z-50">
+      <div className="absolute top-full mt-2 right-0 left-0 md:left-auto md:w-[26rem] md:max-w-[70vw] bg-white border border-slate-200 rounded-none shadow-xl overflow-hidden z-50">
         {matches.length === 0 ? (
           <button
             type="button"
@@ -152,19 +152,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <img
                         src={safeUrl(t.thumbnail)}
                         alt={t.title}
-                        width={96}
-                        height={72}
+                        width={128}
+                        height={88}
                         loading="lazy"
                         decoding="async"
-                        className="w-12 h-9 rounded-none object-cover border border-slate-200 shrink-0"
+                        className="w-16 h-11 rounded-none object-cover border border-slate-200 shrink-0"
                         referrerPolicy="no-referrer"
                       />
                     ) : (
-                      <div className="w-12 h-9 rounded-none bg-slate-100 border border-slate-200 shrink-0" />
+                      <div className="w-16 h-11 rounded-none bg-slate-100 border border-slate-200 shrink-0" />
                     )}
                     <span className="flex-1 min-w-0">
-                      <span className="block text-xs font-bold text-[#0b132b] truncate">{t.title}</span>
-                      <span className="block text-[11px] text-slate-500 font-mono">{formatCurrency(t.price)}</span>
+                      <span dir="auto" className="block text-[13px] font-bold text-[#0b132b] truncate text-right">{t.title}</span>
+                      <span className="block text-[11px] text-slate-500 mt-0.5 truncate">
+                        <strong className="text-[#0b132b] font-mono">{formatCurrency(t.price)}</strong>
+                        {' '}• {t.categoryNameAr}
+                      </span>
                     </span>
                   </button>
                 </li>
@@ -192,7 +195,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Top Announcement Bar (owner-editable via admin → settings; hidden when off/empty) */}
       {announcement?.enabled && announcement.text.trim() ? (
         <div className="bg-[#0b132b] text-white text-xs py-1.5 px-4">
-          <div className="max-w-7xl mx-auto flex items-center justify-center text-center">
+          <div className="max-w-[1440px] mx-auto flex items-center justify-center text-center">
             <p className="flex items-center gap-1.5 font-medium text-slate-200 min-w-0">
               <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
               {renderAnnouncementText(announcement.text.trim(), announcement.code.trim())}
@@ -202,8 +205,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       ) : null}
 
       {/* Main Navigation Bar — h-16 keeps sticky header compact on mobile (more viewport for LCP) */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative flex items-center justify-between h-16 gap-3 sm:gap-4">
+      <div className="max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6">
+        <div className="relative flex items-center justify-between h-16 gap-2">
           {/* Logo */}
           <div className="flex items-center gap-3">
             {/* Sidebar toggle — opens side drawer (themes only) */}
@@ -248,36 +251,44 @@ export const Navbar: React.FC<NavbarProps> = ({
             </a>
 
             {/* Desktop Navigation Links */}
-            <nav className="hidden lg:flex items-center gap-1 mr-4" aria-label="التنقل الرئيسي">
+            <nav className="hidden xl:flex items-center gap-0.5 mr-2" aria-label="التنقل الرئيسي">
               <a
                 id="nav-home-link"
                 href="/"
                 onClick={(e) => { e.preventDefault(); onNavigate('home'); }}
-                className="px-3.5 py-2 text-sm font-semibold text-[#0b132b] hover:text-[#1e3a8a] border-b-2 border-transparent hover:border-[#0b132b] transition"
+                className="px-2.5 py-2 text-[13px] font-semibold whitespace-nowrap text-[#0b132b] hover:text-[#1e3a8a] border-b-2 border-transparent hover:border-[#0b132b] transition"
               >
-                تحميل قوالب GPL
+                تحميل قوالب
               </a>
               <a
                 id="nav-catalog-link"
                 href="/catalog"
                 onClick={(e) => { e.preventDefault(); onNavigate('catalog'); }}
-                className="px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-[#0b132b] border-b-2 border-transparent hover:border-[#0b132b] transition"
+                className="px-2.5 py-2 text-[13px] font-semibold whitespace-nowrap text-slate-700 hover:text-[#0b132b] border-b-2 border-transparent hover:border-[#0b132b] transition"
               >
-                ثيمات ووردبريس GPL
+                ثيمات ووردبريس
+              </a>
+              <a
+                id="nav-shopify-link"
+                href="/shopify"
+                onClick={(e) => { e.preventDefault(); onNavigate('shopify'); }}
+                className="px-2.5 py-2 text-[13px] font-semibold whitespace-nowrap text-slate-700 hover:text-[#0b132b] border-b-2 border-transparent hover:border-[#0b132b] transition"
+              >
+                ثيمات شوبيفاي
               </a>
               <button
                 id="nav-gpl-info-link"
                 onClick={onOpenGPLInfo}
-                className="flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-[#0b132b] border-b-2 border-transparent hover:border-[#0b132b] transition"
+                className="flex items-center gap-1 px-2.5 py-2 text-[13px] font-semibold whitespace-nowrap text-slate-700 hover:text-[#0b132b] border-b-2 border-transparent hover:border-[#0b132b] transition"
               >
-                <HelpCircle className="w-4 h-4 text-[#1e3a8a]" />
+                <HelpCircle className="w-4 h-4 text-[#1e3a8a] shrink-0" />
                 ما هو ترخيص GPL؟
               </button>
               <a
                 id="nav-contact-link"
                 href="/contact"
                 onClick={(e) => { e.preventDefault(); onNavigate('contact'); }}
-                className="px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-[#0b132b] border-b-2 border-transparent hover:border-[#0b132b] transition"
+                className="px-2.5 py-2 text-[13px] font-semibold whitespace-nowrap text-slate-700 hover:text-[#0b132b] border-b-2 border-transparent hover:border-[#0b132b] transition"
               >
                 تواصل معنا
               </a>
@@ -285,7 +296,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Search Bar */}
-          <div className="hidden md:flex flex-1 max-w-md mx-4">
+          <div className="hidden md:flex flex-1 max-w-xl mx-1 lg:mx-2 min-w-0">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -327,7 +338,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Actions: Facebook, Cart & CTA */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <a
               id="btn-facebook-header"
               href="https://facebook.com/vibecode26"
@@ -355,7 +366,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="btn-quick-catalog"
               onClick={() => onNavigate('catalog')}
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 bg-[#0b132b] hover:bg-[#1e293b] text-white text-sm font-bold rounded-none transition cursor-pointer"
+              className="hidden xl:inline-flex items-center px-4 py-2.5 bg-[#0b132b] hover:bg-[#1e293b] text-white text-[13px] font-bold whitespace-nowrap rounded-none transition cursor-pointer"
             >
               <span>استكشف العروض</span>
             </button>
@@ -465,6 +476,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <Mail className="w-5 h-5 text-[#1e3a8a] shrink-0" />
                 <span>تواصل معنا</span>
               </button>
+              <a
+                id="sidebar-nav-shopify"
+                href="/shopify"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('shopify');
+                  closeSidebar();
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-none text-sm font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition text-right cursor-pointer"
+              >
+                <ShoppingBag className="w-5 h-5 text-emerald-700 shrink-0" />
+                <span>ثيمات شوبيفاي</span>
+              </a>
 
               {/* Collapsible platforms */}
               <button

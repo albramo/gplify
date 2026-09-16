@@ -241,7 +241,7 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
             className="text-xs font-semibold text-slate-600 hover:text-[#0b132b] flex items-center gap-1.5 cursor-pointer"
           >
             <HelpCircle className="w-4 h-4 text-[#1e3a8a]" />
-            <span>تعرف على حقوقك الكاملة في رخصة GPL</span>
+            <span>اقرأ دليل رخصة GPL</span>
           </button>
         </div>
       </div>

@@ -68,7 +68,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     }
 
     if (!agreeTerms) {
-      setErrorMessage('يرجى الموافقة على شروط رخصة GPL وسياسة الاستخدام للمتابعة.');
+      setErrorMessage('يرجى الموافقة على شروط الاستخدام للمتابعة.');
       return;
     }
 
@@ -282,7 +282,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     className="mt-0.5 rounded border-slate-300 text-[#0b132b] focus:ring-0 cursor-pointer"
                   />
                   <span>
-                    أوافق على استلام القوالب بترخيص GNU GPL مع حق الاستخدام غير المحدود واستلام الملفات بعد تأكيد الدفع.
+                    أوافق على شروط الاستخدام الموضحة في صفحة كل منتج واستلام الملفات بعد تأكيد الدفع.
                   </span>
                 </label>
               </div>

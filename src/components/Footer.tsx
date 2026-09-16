@@ -11,7 +11,7 @@ import {
 import { subscribeNewsletter } from '../lib/supabase';
 
 interface FooterProps {
-  onNavigate: (view: 'home' | 'catalog' | 'contact' | 'cart' | 'checkout' | 'product' | 'download' | 'order-success') => void;
+  onNavigate: (view: 'home' | 'catalog' | 'shopify' | 'contact' | 'terms' | 'privacy' | 'cart' | 'checkout' | 'product' | 'download' | 'order-success') => void;
   onOpenGPLInfo: () => void;
 }
 
@@ -50,7 +50,7 @@ export const Footer: React.FC<FooterProps> = ({
                 اشترك لتصلك أحدث ثيمات GPL المخفضة
               </h3>
               <p className="text-xs text-slate-300 leading-relaxed">
-                أدخل بريدك الإلكتروني للحصول على إشعار فوري عند تحديث القوالب وصدور كوبونات خصم تصل إلى 50%.
+                أدخل بريدك الإلكتروني للحصول على كوبونات خصم تصل إلى 50% وإشعار بآخر القوالب المضافة.
               </p>
             </div>
 
@@ -104,13 +104,13 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
 
             <p className="text-xs text-slate-300 leading-relaxed max-w-md">
-              gplify أفضل متجر GPL عربي لتحميل قوالب GPL الأصلية: ثيمات ووردبريس GPL، قوالب ووكومرس للمتاجر، ثيمات شوبيفاي — ملفات نظيفة 100% بترخيص GPL v2/v3 قانوني لعدد غير محدود من المواقع مع تسليم فوري عبر البريد الإلكتروني والدفع بفودافون كاش وانستاباي بالجنيه المصري.
+              gplify متجر عربي لتحميل ثيمات شوبيفاي وقوالب Shopify الأصلية، وثيمات ووردبريس وقوالب ووكومرس للمتاجر — ملفات نظيفة 100% برخصة GPL لعدد غير محدود من المواقع مع تسليم فوري عبر البريد الإلكتروني والدفع بفودافون كاش وانستاباي بالجنيه المصري.
             </p>
 
             <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-slate-400">
               <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">100% رخصة قانونية</span>
               <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">ملفات نظيفة ومفحوصة</span>
-              <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">تحديثات مستمرة</span>
+              <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">تسليم فوري عبر البريد</span>
             </div>
           </div>
 
@@ -124,13 +124,18 @@ export const Footer: React.FC<FooterProps> = ({
                 </a>
               </li>
               <li>
+                <a href="/shopify" onClick={(e) => { e.preventDefault(); onNavigate('shopify'); }} className="hover:text-white transition font-bold text-emerald-300">
+                  ثيمات شوبيفاي GPL — قوالب Shopify الأصلية
+                </a>
+              </li>
+              <li>
                 <a href="/catalog" onClick={(e) => { e.preventDefault(); onNavigate('catalog'); }} className="hover:text-white transition">
                   كتالوج ثيمات ووردبريس GPL
                 </a>
               </li>
               <li>
                 <a href="/catalog" onClick={(e) => { e.preventDefault(); onNavigate('catalog'); }} className="hover:text-white transition">
-                  قوالب ووكومرس وثيمات شوبيفاي
+                  قوالب ووكومرس للمتاجر
                 </a>
               </li>
               <li>
@@ -152,8 +157,18 @@ export const Footer: React.FC<FooterProps> = ({
                 </button>
               </li>
               <li>
+                <a href="/terms" onClick={(e) => { e.preventDefault(); onNavigate('terms'); }} className="hover:text-white transition">
+                  شروط الاستخدام
+                </a>
+              </li>
+              <li>
+                <a href="/privacy" onClick={(e) => { e.preventDefault(); onNavigate('privacy'); }} className="hover:text-white transition">
+                  سياسة الخصوصية
+                </a>
+              </li>
+              <li>
                 <span className="text-slate-400 block text-[11px] leading-relaxed pt-1">
-                  جميع الملفات يتم تسليمها فورياً وتخضع لبنود رخصة جنو العمومية.
+                  جميع الملفات يتم تسليمها فورياً، وحالة ترخيص كل منتج مكتوبة على صفحته.
                 </span>
               </li>
             </ul>

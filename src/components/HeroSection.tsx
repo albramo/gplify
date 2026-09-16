@@ -60,14 +60,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* Main headline */}
           <h1 className="mt-5 text-3xl sm:text-5xl font-black text-[#0b132b] tracking-tight leading-[1.35]">
-            ثيمات ووردبريس وشوبيفاي الأصلية
+            ثيمات شوبيفاي وووردبريس الأصلية
             <span className="block text-[#1e3a8a]">ادفع مرة واحدة… واستخدمها على كل مواقعك</span>
           </h1>
 
           {/* Value proposition */}
           <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl mx-auto">
-            بنوفر لك أشهر القوالب العالمية بنسخها الكاملة تحت رخصة GPL — من غير اشتراكات ومن غير حدود
-            على عدد المواقع. اطلب دلوقتي وروابط التحميل توصلك على إيميلك في ثواني.
+            بنوفر لك أشهر قوالب شوبيفاي GPL وقوالب Shopify وثيمات ووردبريس بنسخها الكاملة الأصلية — من غير اشتراكات ومن غير حدود
+            على عدد المواقع والمتاجر. اطلب دلوقتي وروابط التحميل توصلك على إيميلك في ثواني.
           </p>
 
           {/* CTAs — sharp edges */}

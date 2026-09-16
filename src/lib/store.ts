@@ -50,8 +50,7 @@ function asPlatform(v: unknown): PlatformType {
   return 'WordPress';
 }
 
-/** Badge whitelist — أي قيمة غير معروفة ترجع '' (بدون شارة). */
-export function asBadge(v: unknown): string {
+/** Badge whitelist — أي قيمة غير معروفة ترجع '' (بدون شارة). */export function asBadge(v: unknown): string {
   const s = String(v ?? '').trim().toLowerCase();
   return s === 'exclusive' || s === 'featured' ? s : '';
 }
@@ -61,6 +60,11 @@ export function badgeLabelAr(badge: string | undefined): string {
   if (badge === 'exclusive') return 'حصري';
   if (badge === 'featured') return 'مميز';
   return '';
+}
+
+/** المنتج مرخص فقط لو متسجل له نوع رخصة — الفاضي = بدون رخصة ويُباع بحالته. */
+export function themeHasLicense(t: { gplLicenseType?: string }): boolean {
+  return Boolean((t.gplLicenseType || '').trim());
 }
 
 // SECURITY: public storefront must NEVER request download_url.
