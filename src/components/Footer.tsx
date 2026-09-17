@@ -11,7 +11,7 @@ import {
 import { subscribeNewsletter } from '../lib/supabase';
 
 interface FooterProps {
-  onNavigate: (view: 'home' | 'catalog' | 'shopify' | 'contact' | 'terms' | 'privacy' | 'cart' | 'checkout' | 'product' | 'download' | 'order-success') => void;
+  onNavigate: (view: 'home' | 'catalog' | 'search' | 'shopify' | 'wordpress' | 'contact' | 'terms' | 'privacy' | 'cart' | 'checkout' | 'product' | 'download' | 'order-success') => void;
   onOpenGPLInfo: () => void;
 }
 
@@ -132,6 +132,11 @@ export const Footer: React.FC<FooterProps> = ({
               <li>
                 <a href="/shopify" onClick={(e) => { e.preventDefault(); onNavigate('shopify'); }} className="hover:text-white transition font-bold text-emerald-300">
                   ثيمات شوبيفاي GPL — قوالب Shopify الأصلية
+                </a>
+              </li>
+              <li>
+                <a href="/wordpress" onClick={(e) => { e.preventDefault(); onNavigate('wordpress'); }} className="hover:text-white transition font-bold text-blue-300">
+                  ثيمات ووردبريس GPL — قوالب وووكومرس
                 </a>
               </li>
               <li>

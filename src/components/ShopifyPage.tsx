@@ -1,8 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Search, ShoppingBag, ShieldCheck, Zap, BadgeCheck } from 'lucide-react';
 import { ThemeCard } from './ThemeCard';
-import type { GPLTheme } from '../types';
-import { ThemeGridSkeleton, ConnectSupabaseState, ThemesErrorState } from './CatalogPage';
+import { CategoryFilter } from './CategoryFilter';
+import { ThemeGridSkeleton, ConnectSupabaseState, ThemesErrorState, type SortOption } from './CatalogPage';
+import type { GPLTheme, ThemeCategory } from '../types';
+import type { CategoryDef, PlatformDef } from '../lib/settings';
+import { themeCategories, themePlatforms } from '../lib/store';
 
 interface ShopifyPageProps {
   themes: GPLTheme[];
@@ -14,6 +17,8 @@ interface ShopifyPageProps {
   onAddToCart: (theme: GPLTheme) => void;
   onInstantBuy: (theme: GPLTheme) => void;
   isInCart: (themeId: string) => boolean;
+  categories?: CategoryDef[];
+  platforms?: PlatformDef[];
 }
 
 const SHOPIFY_FAQ = [
@@ -53,7 +58,50 @@ export const ShopifyPage: React.FC<ShopifyPageProps> = ({
   onAddToCart,
   onInstantBuy,
   isInCart,
+  categories,
+  platforms,
 }) => {
+  // فلاتر خاصة بالصفحة (مستقلة عن فلاتر home/catalog/search)
+  const [selectedCategory, setSelectedCategory] = useState<ThemeCategory>('all');
+  const [selectedPlatform, setSelectedPlatform] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<SortOption>('popular');
+
+  const filtered = useMemo(() => {
+    let list = [...themes];
+    if (selectedCategory !== 'all') {
+      list = list.filter((t) => themeCategories(t).includes(selectedCategory));
+    }
+    if (selectedPlatform !== 'all') {
+      list = list.filter((t) => themePlatforms(t).includes(selectedPlatform));
+    }
+    switch (sortBy) {
+      case 'popular':
+        list.sort((a, b) => b.downloadsCount - a.downloadsCount);
+        break;
+      case 'rating':
+        list.sort((a, b) => b.rating - a.rating || b.reviewsCount - a.reviewsCount);
+        break;
+      case 'newest':
+        list.sort((a, b) => new Date(b.updatedDate).getTime() - new Date(a.updatedDate).getTime());
+        break;
+      case 'price-asc':
+        list.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        list.sort((a, b) => b.price - a.price);
+        break;
+    }
+    return list;
+  }, [themes, selectedCategory, selectedPlatform, sortBy]);
+
+  const resetFilters = () => {
+    setSelectedCategory('all');
+    setSelectedPlatform('all');
+    setSortBy('popular');
+  };
+
+  const updatedLabel = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long' });
+
   useEffect(() => {
     const id = 'shopify-faq-schema';
     let el = document.head.querySelector<HTMLScriptElement>(`script[data-seo="${id}"]`);
@@ -91,9 +139,24 @@ export const ShopifyPage: React.FC<ShopifyPageProps> = ({
         </div>
       );
     }
+    if (filtered.length === 0) {
+      return (
+        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
+          <Search className="w-10 h-10 text-slate-300 mx-auto" />
+          <h3 className="text-base font-bold text-[#0b132b]">لا توجد قوالب مطابقة للفلاتر الحالية</h3>
+          <p className="text-xs text-slate-500">جرب إزالة الفلاتر لعرض كل ثيمات شوبيفاي</p>
+          <button
+            onClick={resetFilters}
+            className="px-4 py-2 bg-[#0b132b] text-white text-xs font-bold rounded-xl cursor-pointer"
+          >
+            إزالة الفلاتر
+          </button>
+        </div>
+      );
+    }
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {themes.map((theme) => (
+        {filtered.map((theme) => (
           <ThemeCard
             key={theme.id}
             theme={theme}
@@ -140,7 +203,23 @@ export const ShopifyPage: React.FC<ShopifyPageProps> = ({
             </span>
           ))}
         </div>
+        <p className="text-[11px] text-slate-400">آخر تحديث للتشكيلة: {updatedLabel}</p>
       </header>
+
+      {/* Filters — نفس فلاتر الكتالوج على قوالب شوبيفاي فقط */}
+      {!themesLoading && storeConnected && !themesError && themes.length > 0 && (
+        <CategoryFilter
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          selectedPlatform={selectedPlatform}
+          onSelectPlatform={setSelectedPlatform}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          totalResults={filtered.length}
+          categories={categories}
+          platforms={platforms}
+        />
+      )}
 
       {/* Product grid */}
       {renderGrid()}
@@ -178,7 +257,7 @@ export const ShopifyPage: React.FC<ShopifyPageProps> = ({
         </div>
         <nav aria-label="تصفح أقسام المتجر" className="flex flex-wrap gap-2 pt-2">
           <a href="/catalog" className="px-4 py-2 bg-[#0b132b] text-white text-xs font-bold rounded-xl hover:bg-[#1e293b] transition">تصفح كتالوج قوالب GPL كامل</a>
-          <a href="/" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">تحميل ثيمات ووردبريس GPL</a>
+          <a href="/wordpress" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">تحميل ثيمات ووردبريس GPL</a>
         </nav>
       </section>
 

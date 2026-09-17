@@ -44,7 +44,9 @@ const CheckoutPage = lazy(() => import('./components/CheckoutPage').then(m => ({
 const OrderSuccessModal = lazy(() => import('./components/OrderSuccessModal').then(m => ({ default: m.OrderSuccessModal })));
 const DownloadPage = lazy(() => import('./components/DownloadPage').then(m => ({ default: m.DownloadPage })));
 const CatalogPage = lazy(() => import('./components/CatalogPage').then(m => ({ default: m.CatalogPage })));
+const SearchPage = lazy(() => import('./components/SearchPage').then(m => ({ default: m.SearchPage })));
 const ShopifyPage = lazy(() => import('./components/ShopifyPage').then(m => ({ default: m.ShopifyPage })));
+const WordpressPage = lazy(() => import('./components/WordpressPage').then(m => ({ default: m.WordpressPage })));
 const ContactPage = lazy(() => import('./components/ContactPage').then(m => ({ default: m.ContactPage })));
 const PoliciesPage = lazy(() => import('./components/PoliciesPage').then(m => ({ default: m.PoliciesPage })));
 const GPLInfoModal = lazy(() => import('./components/GPLInfoModal').then(m => ({ default: m.GPLInfoModal })));
@@ -60,13 +62,23 @@ function isAdminRoute() {
   return path === '/admin122' || window.location.hash === '#/admin122';
 }
 
-type StoreView = 'home' | 'catalog' | 'shopify' | 'contact' | 'terms' | 'privacy' | 'product' | 'cart' | 'checkout' | 'order-success' | 'download';
+type StoreView = 'home' | 'catalog' | 'search' | 'shopify' | 'wordpress' | 'contact' | 'terms' | 'privacy' | 'product' | 'cart' | 'checkout' | 'order-success' | 'download';
 
-function parseRoute(): { view: StoreView; slug?: string } {
+function getSearchQueryFromUrl(): string {
+  try {
+    return new URLSearchParams(window.location.search).get('q')?.trim() ?? '';
+  } catch {
+    return '';
+  }
+}
+
+function parseRoute(): { view: StoreView; slug?: string; searchQuery?: string } {
   const path = window.location.pathname.replace(/\/+$/, '').toLowerCase() || '/';
+  if (path === '/search') return { view: 'search', searchQuery: getSearchQueryFromUrl() };
   if (path === '/download') return { view: 'download' };
   if (path === '/catalog') return { view: 'catalog' };
   if (path === '/shopify') return { view: 'shopify' };
+  if (path === '/wordpress') return { view: 'wordpress' };
   if (path === '/contact') return { view: 'contact' };
   if (path === '/terms') return { view: 'terms' };
   if (path === '/privacy') return { view: 'privacy' };
@@ -125,10 +137,10 @@ export default function App() {
   const [selectedThemeId, setSelectedThemeId] = useState<string | null>(null);
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
 
-  // Filters & Search
+  // Filters & Search — searchQuery يعيش فقط في صفحة /search ولا يفلتر home/catalog
   const [selectedCategory, setSelectedCategory] = useState<ThemeCategory>('all');
   const [selectedPlatform, setSelectedPlatform] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>(() => parseRoute().searchQuery ?? '');
   const [sortBy, setSortBy] = useState<'popular' | 'rating' | 'newest' | 'price-asc' | 'price-desc'>('popular');
 
   // Cart State with LocalStorage Persistence
@@ -208,6 +220,9 @@ export default function App() {
       } else {
         setPendingSlug(null);
         setSlugNotFound(false);
+        if (route.view === 'search') {
+          setSearchQuery(route.searchQuery ?? '');
+        }
         setCurrentView(route.view);
       }
       window.scrollTo({ top: 0 });
@@ -300,6 +315,11 @@ export default function App() {
       setSlugNotFound(false);
       setCurrentView('product');
       pushUrl(`/theme/${t.slug}`);
+    } else if (view === 'search') {
+      // ابقَ على نفس كلمة البحث الحالية عند التنقل لصفحة البحث من الاقتراحات
+      const q = searchQuery.trim();
+      setCurrentView('search');
+      pushUrl(q ? `/search?q=${encodeURIComponent(q)}` : '/search');
     } else {
       setCurrentView(view);
       pushUrl(view === 'home' ? '/' : `/${view}`);
@@ -307,7 +327,24 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Filtered and Sorted Themes List
+  // البحث يفتح صفحة /search?q=... مستقلة — لا يفلتر home/catalog
+  const handleSearchSubmit = (rawQuery: string) => {
+    const q = rawQuery.trim();
+    setSearchQuery(q);
+    setCurrentView('search');
+    pushUrl(q ? `/search?q=${encodeURIComponent(q)}` : '/search');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setCurrentView('catalog');
+    pushUrl('/catalog');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Filtered and Sorted Themes List — للرئيسية والكتالوج فقط (تصنيف + منصة + ترتيب).
+  // البحث معزول في صفحة /search ولا يؤثر هنا.
   const filteredThemes = useMemo(() => {
     let list = [...themes];
 
@@ -319,19 +356,6 @@ export default function App() {
     // Filter by platform (a theme matches if ANY of its platforms match)
     if (selectedPlatform !== 'all') {
       list = list.filter((t) => themePlatforms(t).includes(selectedPlatform));
-    }
-
-    // Filter by search query
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      list = list.filter(
-        (t) =>
-          t.title.toLowerCase().includes(q) ||
-          t.titleEn.toLowerCase().includes(q) ||
-          t.shortDescription.toLowerCase().includes(q) ||
-          t.tags.some((tag) => tag.toLowerCase().includes(q)) ||
-          t.categoryNameAr.toLowerCase().includes(q)
-      );
     }
 
     // Sorting
@@ -354,7 +378,7 @@ export default function App() {
     }
 
     return list;
-  }, [themes, selectedCategory, selectedPlatform, searchQuery, sortBy]);
+  }, [themes, selectedCategory, selectedPlatform, sortBy]);
 
   const heroStats = useMemo(() => {
     if (themes.length === 0) return null;
@@ -437,6 +461,12 @@ export default function App() {
             description: 'تحميل ثيمات شوبيفاي وقوالب Shopify الأصلية بنسخ نظيفة بسعر رخيص بديل النسخ المجانية — تسليم فوري عبر البريد والدفع فودافون كاش وانستاباي.',
             path: '/shopify',
           });
+        } else if (currentView === 'wordpress') {
+          setStaticHead({
+            title: 'ثيمات ووردبريس GPL | تحميل قوالب WordPress وووكومرس الأصلية - gplify',
+            description: 'تحميل ثيمات ووردبريس وقوالب WordPress وووكومرس المتوافقة مع إليمنتور بنسخ GPL أصلية بسعر رخيص بديل النسخ المجانية — تسليم فوري عبر البريد والدفع فودافون كاش وانستاباي.',
+            path: '/wordpress',
+          });
         } else if (currentView === 'cart') {
           setStaticHead({ title: 'سلة التسوق | gplify', description: 'سلة التسوق — راجع قوالب GPL قبل إتمام الطلب.', path: '/cart' });
         } else if (currentView === 'contact') {
@@ -449,6 +479,13 @@ export default function App() {
           setStaticHead({ title: 'إتمام الطلب | gplify', description: 'إتمام طلب قوالب GPL — تسليم فوري لملفات ZIP عبر البريد الإلكتروني.', path: '/checkout' });
         } else if (currentView === 'download') {
           setStaticHead({ title: 'تحميل ملفك | gplify', description: 'تحميل ملفك من gplify — رابط آمن لمرة واحدة.', path: '/download' });
+        } else if (currentView === 'search') {
+          const sq = searchQuery.trim();
+          setStaticHead({
+            title: sq ? `نتائج البحث عن ${sq} | gplify` : 'البحث في القوالب | gplify',
+            description: sq ? `نتائج البحث عن ${sq} في كتالوج قوالب GPL.` : 'ابحث في كتالوج قوالب GPL.',
+            path: '/search',
+          });
         } else {
           setStaticHead({
             title: 'ثيمات شوبيفاي | تحميل قوالب Shopify الأصلية بسعر مخفض - gplify',
@@ -459,16 +496,18 @@ export default function App() {
       } catch {
         if (currentView === 'catalog') document.title = 'تحميل قوالب GPL | كتالوج ثيمات ووردبريس وشوبيفاي - gplify';
         else if (currentView === 'shopify') document.title = 'ثيمات شوبيفاي GPL | تحميل قوالب شوبيفاي وقوالب Shopify - gplify';
+        else if (currentView === 'wordpress') document.title = 'ثيمات ووردبريس GPL | تحميل قوالب WordPress وووكومرس - gplify';
         else if (currentView === 'cart') document.title = 'سلة التسوق | gplify';
         else if (currentView === 'contact') document.title = 'تواصل معنا | gplify';
         else if (currentView === 'terms') document.title = 'شروط الاستخدام | gplify';
         else if (currentView === 'privacy') document.title = 'سياسة الخصوصية | gplify';
         else if (currentView === 'checkout') document.title = 'إتمام الطلب | gplify';
         else if (currentView === 'download') document.title = 'تحميل ملفك | gplify';
+        else if (currentView === 'search') document.title = searchQuery.trim() ? `نتائج البحث عن ${searchQuery.trim()} | gplify` : 'البحث في القوالب | gplify';
         else document.title = 'تحميل قوالب GPL الأصلية | متجر ثيمات ووردبريس GPL بالعربي - gplify';
       }
     })();
-  }, [currentView, currentSelectedTheme]);
+  }, [currentView, currentSelectedTheme, searchQuery]);
 
   // GA4 SPA pageviews — gtag.js loaded in index.html; pushState nav needs manual tracking
   useEffect(() => {
@@ -490,6 +529,7 @@ export default function App() {
         onOpenGPLInfo={() => setIsGPLModalOpen(true)}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        onSearchSubmit={handleSearchSubmit}
         themes={themes}
         announcement={settings.announcement}
         platforms={settings.platforms}
@@ -556,7 +596,7 @@ export default function App() {
               />
 
               {/* Theme Grid */}
-              {renderThemeGrid('لم يتم العثور على قوالب تطابق بحثك', 'جرب البحث بكلمات عامة مثل (أسترا، ووكومرس، متجر، بورتفوليو...)', 'إعادة ضبط الفلاتر')}
+              {renderThemeGrid('لا توجد قوالب مطابقة للفلاتر الحالية', 'جرب تغيير التصنيف أو المنصة', 'إعادة ضبط الفلاتر')}
             </section>
 
             {/* Email Direct Delivery Trust Banner */}
@@ -635,6 +675,26 @@ export default function App() {
           />
         )}
 
+        {/* VIEW: SEARCH RESULTS (/search?q=...) */}
+        {currentView === 'search' && (
+          <SearchPage
+            query={searchQuery}
+            themes={themes}
+            themesLoading={themesLoading}
+            storeConnected={storeConnected}
+            themesError={themesError}
+            onRetry={loadStoreData}
+            onSelectTheme={(t) => handleNavigate('product', t.id)}
+            onAddToCart={handleAddToCart}
+            onInstantBuy={handleInstantBuy}
+            isInCart={(id) => cart.some((item) => item.theme.id === id)}
+            onClearSearch={handleClearSearch}
+            onBrowseCatalog={() => handleNavigate('catalog')}
+            categories={settings.categories}
+            platforms={settings.platforms}
+          />
+        )}
+
         {/* VIEW: SHOPIFY LANDING (/shopify) — صفحة هبوط لكلمات ثيمات شوبيفاي */}
         {currentView === 'shopify' && (
           <ShopifyPage
@@ -647,6 +707,27 @@ export default function App() {
             onAddToCart={handleAddToCart}
             onInstantBuy={handleInstantBuy}
             isInCart={(id) => cart.some((item) => item.theme.id === id)}
+            categories={settings.categories}
+            platforms={settings.platforms}
+          />
+        )}
+
+        {/* VIEW: WORDPRESS LANDING (/wordpress) — صفحة هبوط لكلمات ثيمات ووردبريس وووكومرس */}
+        {currentView === 'wordpress' && (
+          <WordpressPage
+            themes={themes.filter((t) =>
+              themePlatforms(t).some((p) => ['wordpress', 'woocommerce', 'elementor'].includes(p.toLowerCase()))
+            )}
+            themesLoading={themesLoading}
+            storeConnected={storeConnected}
+            themesError={themesError}
+            onRetry={loadStoreData}
+            onSelectTheme={(t) => handleNavigate('product', t.id)}
+            onAddToCart={handleAddToCart}
+            onInstantBuy={handleInstantBuy}
+            isInCart={(id) => cart.some((item) => item.theme.id === id)}
+            categories={settings.categories}
+            platforms={settings.platforms}
           />
         )}
 

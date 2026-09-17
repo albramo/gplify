@@ -76,6 +76,7 @@ async function main() {
   const sitemapUrls: { loc: string; lastmod: string | null; priority: string; changefreq: string }[] = [
     { loc: `${SITE_URL}/`, lastmod: new Date().toISOString(), priority: '1.0', changefreq: 'daily' },
     { loc: `${SITE_URL}/shopify`, lastmod: new Date().toISOString(), priority: '0.95', changefreq: 'daily' },
+    { loc: `${SITE_URL}/wordpress`, lastmod: new Date().toISOString(), priority: '0.95', changefreq: 'daily' },
     { loc: `${SITE_URL}/catalog`, lastmod: new Date().toISOString(), priority: '0.9', changefreq: 'daily' },
   ];
 
@@ -232,10 +233,21 @@ async function main() {
       const t = String((r as any).title || s);
       return `<li><a href="${esc(SITE_URL)}/theme/${esc(s)}">تحميل ${esc(t)} شوبيفاي GPL الأصلي</a></li>`;
     }).join('');
+    const WP_PLATFORMS = ['wordpress', 'woocommerce', 'elementor'];
+    const wordpressRows = rows.filter((r) => {
+      const p = String((r as any).platform || '').toLowerCase();
+      const ps = Array.isArray((r as any).platforms) ? (r as any).platforms.map((x: any) => String(x).toLowerCase()) : [];
+      return WP_PLATFORMS.includes(p) || ps.some((x: string) => WP_PLATFORMS.includes(x));
+    });
+    const wordpressLinks = (wordpressRows.length ? wordpressRows : rows).slice(0, 30).map((r) => {
+      const s = String((r as any).slug || '').trim().toLowerCase();
+      const t = String((r as any).title || s);
+      return `<li><a href="${esc(SITE_URL)}/theme/${esc(s)}">تحميل ${esc(t)} GPL الأصلي</a></li>`;
+    }).join('');
     const homeStatic = `<div id="root"><main dir="rtl" lang="ar" style="max-width:720px;margin:0 auto;padding:24px;font-family:system-ui">`
       + `<h1>تحميل ثيمات شوبيفاي وقوالب Shopify الأصلية</h1>`
       + `<p><strong>gplify</strong> متجر عربي لتحميل ثيمات شوبيفاي وقوالب Shopify الأصلية بنسخ نظيفة 100% بسعر رخيص بديل النسخ المجانية المضروبة، مع ثيمات ووردبريس GPL وقوالب ووكومرس — تسليم فوري عبر البريد الإلكتروني والدفع فودافون كاش وانستاباي بالجنيه المصري.</p>`
-      + `<p><a href="${esc(SITE_URL)}/shopify">تصفح قسم ثيمات شوبيفاي GPL كاملا</a></p>`
+      + `<p><a href="${esc(SITE_URL)}/shopify">تصفح قسم ثيمات شوبيفاي GPL كاملا</a> | <a href="${esc(SITE_URL)}/wordpress">تصفح قسم ثيمات ووردبريس GPL كاملا</a></p>`
       + `<h2>أشهر قوالب GPL للتحميل الفوري</h2><ul>${themeLinks}</ul>`
       + `<h2>ليه تحمل قوالب شوبيفاي GPL من gplify؟</h2><p>ملفات أصلية 100% مفحوصة أمنيا، بأحدث إصدار متوفر من المطور، استخدام على أي عدد متاجر ومواقع، والملفات زي الأصلية بالظبط بدون أي تعديل.</p>`
       + `<p><a href="${esc(SITE_URL)}/catalog">تصفح كتالوج تحميل قوالب GPL كاملا</a></p>`
@@ -251,7 +263,7 @@ async function main() {
     const catalogStatic = `<div id="root"><main dir="rtl" lang="ar" style="max-width:720px;margin:0 auto;padding:24px;font-family:system-ui">`
       + `<h1>كتالوج القوالب | ثيمات شوبيفاي وووردبريس الأصلية</h1>`
       + `<p>تصفح كافة القوالب الأصلية: ثيمات شوبيفاي وقوالب Shopify للمتاجر، ثيمات ووردبريس وقوالب ووكومرس مع معاينة حية وتحميل فوري بعد الشراء.</p>`
-      + `<p><a href="${esc(SITE_URL)}/shopify">قسم ثيمات شوبيفاي GPL وقوالب Shopify</a></p>`
+      + `<p><a href="${esc(SITE_URL)}/shopify">قسم ثيمات شوبيفاي GPL وقوالب Shopify</a> | <a href="${esc(SITE_URL)}/wordpress">قسم ثيمات ووردبريس GPL وقوالب ووكومرس</a></p>`
       + `<ul>${themeLinks}</ul>`
       + `</main></div>`;
     const catalogHtml = template
@@ -304,6 +316,49 @@ async function main() {
     const shopifyDir = join(DIST, 'shopify');
     mkdirSync(shopifyDir, { recursive: true });
     writeFileSync(join(shopifyDir, 'index.html'), shopifyHtml);
+
+    // ---- صفحة /wordpress المخصصة: أهم URL لكلمات ثيمات ووردبريس وووكومرس ----
+    const wordpressTitle = 'ثيمات ووردبريس GPL | تحميل قوالب WordPress وووكومرس الأصلية - gplify';
+    const wordpressDesc = 'تحميل ثيمات ووردبريس وقوالب WordPress وووكومرس المتوافقة مع إليمنتور بنسخ GPL أصلية بسعر رخيص بديل النسخ المجانية المضروبة — تسليم فوري عبر البريد والدفع فودافون كاش وانستاباي.';
+    const wordpressStatic = `<div id="root"><main dir="rtl" lang="ar" style="max-width:720px;margin:0 auto;padding:24px;font-family:system-ui">`
+      + `<nav aria-label="breadcrumb"><a href="${esc(SITE_URL)}/">الرئيسية</a> / <a href="${esc(SITE_URL)}/catalog">تحميل قوالب GPL</a> / <span>ثيمات ووردبريس GPL</span></nav>`
+      + `<h1>تحميل ثيمات ووردبريس | قوالب WordPress الأصلية</h1>`
+      + `<p>لو بتدور على <strong>ثيمات ووردبريس</strong> أو <strong>قوالب ووردبريس</strong> بسعر رخيص، فـ <strong>gplify</strong> بيجمع لك أشهر <strong>قوالب WordPress</strong> العالمية — بما فيها قوالب <strong>ووكومرس</strong> للمتاجر والقوالب المتوافقة مع <strong>إليمنتور</strong> — بنسخ <strong>GPL</strong> أصلية ونظيفة 100% بديل آمن للنسخ <strong>المجانية (nulled)</strong> المضروبة. كل الثيمات محدثة لآخر إصدار وتشتغل على أي عدد مواقع بدون مفاتيح تفعيل، مع تسليم فوري عبر البريد والدفع فودافون كاش وانستاباي بالجنيه المصري.</p>`
+      + `<h2>أشهر ثيمات ووردبريس GPL للتحميل الفوري</h2><ul>${wordpressLinks}</ul>`
+      + `<h2>ليه تشتري قوالب ووردبريس GPL بدل النسخ المجانية؟</h2><p>النسخ المجانية (nulled) المنتشرة غالبا قديمة ومليانة فيروسات وروابط خبيثة ممكن تدمر ترتيب موقعك في جوجل. نسخ gplify أصلية من المطور بدون أي تعديل، مفحوصة أمنيا، بأحدث إصدار متوفر.</p>`
+      + `<h2>الأسئلة الشائعة عن ثيمات ووردبريس</h2><h3>هل القوالب متوافقة مع ووكومرس وإليمنتور؟</h3><p>أيوه — أغلب الثيمات متوافقة مع ووكومرس وإليمنتور، والمنصات المدعومة مكتوبة على صفحة كل قالب.</p><h3>ازاي بثبت قالب ووردبريس؟</h3><p>بعد الدفع بيوصلك ملف ZIP على الإيميل، ترفعه من لوحة ووردبريس ثم المظهر ثم قوالب ثم إضافة جديد في دقيقتين.</p>`
+      + `<p><a href="${esc(SITE_URL)}/catalog">تصفح كتالوج قوالب GPL كاملا</a> | <a href="${esc(SITE_URL)}/shopify">قسم ثيمات شوبيفاي</a> | <a href="${esc(SITE_URL)}/">الصفحة الرئيسية</a></p>`
+      + `</main></div>`;
+    const wordpressJsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      inLanguage: 'ar',
+      mainEntity: [
+        { '@type': 'Question', name: 'هل عندكم ثيمات ووردبريس GPL؟', acceptedAnswer: { '@type': 'Answer', text: 'أيوه — قسم كامل لتحميل ثيمات ووردبريس GPL وقوالب ووكومرس الأصلية بنسخ نظيفة بسعر رخيص مع تسليم فوري.' } },
+        { '@type': 'Question', name: 'هل القوالب متوافقة مع ووكومرس وإليمنتور؟', acceptedAnswer: { '@type': 'Answer', text: 'أيوه — أغلب الثيمات متوافقة مع ووكومرس وإليمنتور، والمنصات المدعومة مكتوبة على صفحة كل قالب.' } },
+      ],
+    };
+    const wordpressHtml = template
+      .replace(/<title>[^<]*<\/title>/, `<title>${esc(wordpressTitle)}</title>`)
+      .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(wordpressDesc)}$2`)
+      .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(wordpressTitle)}$2`)
+      .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(wordpressDesc)}$2`)
+      .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(wordpressTitle)}$2`)
+      .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(wordpressDesc)}$2`)
+      .replace(
+        '</head>',
+        `<link rel="canonical" href="${esc(SITE_URL)}/wordpress">\n`
+        + `    <link rel="alternate" hreflang="ar" href="${esc(SITE_URL)}/wordpress">\n`
+        + `    <link rel="alternate" hreflang="x-default" href="${esc(SITE_URL)}/wordpress">\n`
+        + `    <meta property="og:url" content="${esc(SITE_URL)}/wordpress">\n`
+        + `    <meta property="og:type" content="website">\n`
+        + `    <script type="application/ld+json">${JSON.stringify(wordpressJsonLd)}<\/script>\n`
+        + `  </head>`
+      )
+      .replace(/<div id="root"><\/div>/, wordpressStatic);
+    const wordpressDir = join(DIST, 'wordpress');
+    mkdirSync(wordpressDir, { recursive: true });
+    writeFileSync(join(wordpressDir, 'index.html'), wordpressHtml);
 
     // ---- SPA shell pages: نسخة static لكل route مالوش prerender مخصص ----
     // /catalog و /shopify شغالين مباشرة لأن ليهم ملف dist/*/index.html، لكن
@@ -411,6 +466,7 @@ async function main() {
     '',
     '## Main sections',
     `- [ثيمات شوبيفاي GPL](${SITE_URL}/shopify): تحميل ثيمات شوبيفاي GPL وقوالب Shopify الأصلية بسعر رخيص بديل النسخ المجانية مع معاينة حية وتسليم فوري.`,
+    `- [ثيمات ووردبريس GPL](${SITE_URL}/wordpress): تحميل ثيمات ووردبريس GPL وقوالب ووكومرس المتوافقة مع إليمنتور بنسخ أصلية بسعر رخيص مع معاينة حية وتسليم فوري.`,
     `- [الرئيسية](${SITE_URL}/): قوالب WordPress وShopify الأصلية بسعر مخفض وتسليم فوري.`,
     `- [الكتالوج](${SITE_URL}/catalog): تصفح كافة القوالب مع المعاينة الحية والتحميل الفوري بعد الشراء.`,
     ...rows.slice(0, 50).map((r) => {

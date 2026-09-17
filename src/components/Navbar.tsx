@@ -19,10 +19,11 @@ import { formatCurrency } from './ThemeCard';
 interface NavbarProps {
   cartCount: number;
   onOpenCart: () => void;
-  onNavigate: (view: 'home' | 'catalog' | 'shopify' | 'contact' | 'terms' | 'privacy' | 'cart' | 'checkout' | 'product' | 'download' | 'order-success', themeId?: string) => void;
+  onNavigate: (view: 'home' | 'catalog' | 'search' | 'shopify' | 'wordpress' | 'contact' | 'terms' | 'privacy' | 'cart' | 'checkout' | 'product' | 'download' | 'order-success', themeId?: string) => void;
   onOpenGPLInfo: () => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
+  onSearchSubmit?: (q: string) => void;
   themes: GPLTheme[];
   announcement?: AnnouncementDef;
   platforms?: PlatformDef[];
@@ -60,6 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenGPLInfo,
   searchQuery,
   onSearchChange,
+  onSearchSubmit,
   themes,
   announcement,
   platforms = [],
@@ -104,7 +106,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const closeSidebar = () => setSidebarOpen(false);
 
-  // Live matches stay on the same page — navigation happens only on explicit submit/select
+  // Live matches للاقتراحات فقط — الكتابة لا تغيّر الصفحة الحالية،
+  // والانتقال لصفحة /search يتم فقط عند Enter أو "عرض كل النتائج" أو اختيار اقتراح
   const matches = useMemo(() => {
     const q = debouncedQuery.toLowerCase().trim();
     if (!q) return [];
@@ -119,6 +122,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, [themes, debouncedQuery]);
   const suggestions = matches.slice(0, 6);
 
+  const submitSearch = (close: () => void) => {
+    const q = searchQuery.trim();
+    if (!q) return;
+    if (onSearchSubmit) onSearchSubmit(q);
+    else onNavigate('search');
+    close();
+  };
+
   const renderSuggestions = (close: () => void) => {
     const q = searchQuery.trim();
     if (!q) return null;
@@ -127,13 +138,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         {matches.length === 0 ? (
           <button
             type="button"
-            onClick={() => {
-              onNavigate('catalog');
-              close();
-            }}
+            onClick={() => submitSearch(close)}
             className="w-full text-right px-4 py-3 text-xs text-slate-500 hover:bg-slate-50 transition cursor-pointer"
           >
-            لا توجد نتائج مطابقة — اضغط لعرض الكتالوج
+            لا توجد نتائج مطابقة — اضغط لعرض صفحة البحث
           </button>
         ) : (
           <>
@@ -175,10 +183,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </ul>
             <button
               type="button"
-              onClick={() => {
-                onNavigate('catalog');
-                close();
-              }}
+              onClick={() => submitSearch(close)}
               className="w-full px-4 py-2.5 bg-slate-50 hover:bg-slate-100 border-t border-slate-200 text-xs font-bold text-[#0b132b] transition cursor-pointer"
             >
               عرض كل النتائج ({matches.length})
@@ -253,17 +258,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Desktop Navigation Links */}
             <nav className="hidden xl:flex items-center gap-0.5 mr-2" aria-label="التنقل الرئيسي">
               <a
-                id="nav-home-link"
-                href="/"
-                onClick={(e) => { e.preventDefault(); onNavigate('home'); }}
-                className="px-2.5 py-2 text-[13px] font-semibold whitespace-nowrap text-[#0b132b] hover:text-[#1e3a8a] border-b-2 border-transparent hover:border-[#0b132b] transition"
-              >
-                تحميل قوالب
-              </a>
-              <a
                 id="nav-catalog-link"
                 href="/catalog"
                 onClick={(e) => { e.preventDefault(); onNavigate('catalog'); }}
+                className="px-2.5 py-2 text-[13px] font-semibold whitespace-nowrap text-slate-700 hover:text-[#0b132b] border-b-2 border-transparent hover:border-[#0b132b] transition"
+              >
+                كل القوالب
+              </a>
+              <a
+                id="nav-wordpress-link"
+                href="/wordpress"
+                onClick={(e) => { e.preventDefault(); onNavigate('wordpress'); }}
                 className="px-2.5 py-2 text-[13px] font-semibold whitespace-nowrap text-slate-700 hover:text-[#0b132b] border-b-2 border-transparent hover:border-[#0b132b] transition"
               >
                 ثيمات ووردبريس
@@ -301,7 +306,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               onSubmit={(e) => {
                 e.preventDefault();
                 setSearchFocused(false);
-                onNavigate('catalog');
+                const q = searchQuery.trim();
+                if (!q) return;
+                if (onSearchSubmit) onSearchSubmit(q);
+                else onNavigate('search');
               }}
               className={`relative w-full transition-all duration-200 ${searchFocused ? 'ring-2 ring-[#0b132b] rounded-full' : ''}`}
             >
@@ -381,7 +389,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               e.preventDefault();
               setMobileSearchFocused(false);
               setMobileSearchOpen(false);
-              onNavigate('catalog');
+              const q = searchQuery.trim();
+              if (!q) return;
+              if (onSearchSubmit) onSearchSubmit(q);
+              else onNavigate('search');
             }}
             className="relative w-full"
           >
@@ -488,6 +499,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <ShoppingBag className="w-5 h-5 text-emerald-700 shrink-0" />
                 <span>ثيمات شوبيفاي</span>
+              </a>
+              <a
+                id="sidebar-nav-wordpress"
+                href="/wordpress"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('wordpress');
+                  closeSidebar();
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-none text-sm font-bold text-[#1e3a8a] bg-blue-50 hover:bg-blue-100 border border-blue-200 transition text-right cursor-pointer"
+              >
+                <LayoutGrid className="w-5 h-5 text-[#1e3a8a] shrink-0" />
+                <span>ثيمات ووردبريس</span>
               </a>
 
               {/* Collapsible platforms */}

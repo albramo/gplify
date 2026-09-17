@@ -103,8 +103,8 @@ export const HomeSeoSections: React.FC<{ themesCount: number }> = ({ themesCount
           {/* روابط داخلية بكلمات مفتاحية (Internal Linking) */}
           <nav aria-label="تصفح أقسام قوالب GPL" className="flex flex-wrap gap-2 pt-2">
             <a href="/shopify" className="px-4 py-2 bg-[#0b132b] text-white text-xs font-bold rounded-xl hover:bg-[#1e293b] transition">ثيمات شوبيفاي GPL — قوالب Shopify</a>
-            <a href="/catalog" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">تحميل قوالب ووردبريس GPL</a>
-            <a href="/catalog" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">ثيمات ووكومرس للمتاجر</a>
+            <a href="/wordpress" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">تحميل قوالب ووردبريس GPL</a>
+            <a href="/wordpress" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">ثيمات ووكومرس للمتاجر</a>
             <a href="/catalog" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">قوالب الشركات والبورتفوليو</a>
           </nav>
         </div>
