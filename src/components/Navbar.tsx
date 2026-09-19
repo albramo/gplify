@@ -349,7 +349,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <a
               id="btn-facebook-header"
-              href="https://facebook.com/vibecode26"
+              href="https://facebook.com/gplify"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="صفحة gplify على فيسبوك"
@@ -563,7 +563,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="border-t border-slate-200 px-4 py-3 bg-white">
               <a
                 id="sidebar-facebook-link"
-                href="https://facebook.com/vibecode26"
+                href="https://facebook.com/gplify"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="صفحة gplify على فيسبوك"

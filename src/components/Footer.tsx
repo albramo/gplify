@@ -190,7 +190,7 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="mt-12 pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <p>© 2026 gplify — جميع الحقوق محفوظة.</p>
           <a
-            href="https://facebook.com/vibecode26"
+            href="https://facebook.com/gplify"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="صفحة gplify على فيسبوك"

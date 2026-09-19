@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Facebook, MessageCircle, ArrowLeft, Send, Check, User, Mail, FileText } from 'lucide-react';
 import { sendContactMessage } from '../lib/supabase';
 
-const FACEBOOK_URL = 'https://facebook.com/vibecode26';
+const FACEBOOK_URL = 'https://facebook.com/gplify';
 
 interface ContactPageProps {
   onBackToStore: () => void;
@@ -172,7 +172,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onBackToStore, initial
                 صفحة الفيسبوك الرسمية
               </span>
               <span className="block text-xs sm:text-sm text-slate-500 font-mono mt-0.5 truncate" dir="ltr">
-                facebook.com/vibecode26
+                facebook.com/gplify
               </span>
               <span className="block text-xs text-slate-500 mt-1">
                 اضغط للانتقال للصفحة وإرسال رسالة مباشرة
