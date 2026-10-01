@@ -365,6 +365,8 @@ export const AdminPanel: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [listError, setListError] = useState('');
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
+  const [priceFilter, setPriceFilter] = useState<'all' | 'free' | 'paid'>('all');
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -591,16 +593,31 @@ export const AdminPanel: React.FC = () => {
     if (adminEmail) loadAll();
   }, [adminEmail]);
 
+  const activeOf = (id: string) => themes.find((t) => t.id === id)?.isActive ?? true;
+
   const filteredThemes = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return themes;
-    return themes.filter(
-      (t) =>
+    return themes.filter((t) => {
+      // 1. Search filter
+      const matchesSearch =
+        !q ||
         t.title.toLowerCase().includes(q) ||
         t.titleEn.toLowerCase().includes(q) ||
-        t.id.toLowerCase().includes(q)
-    );
-  }, [themes, search]);
+        t.id.toLowerCase().includes(q);
+      if (!matchesSearch) return false;
+
+      // 2. Status / Visibility filter
+      const isActive = t.isActive !== false;
+      if (statusFilter === 'active' && !isActive) return false;
+      if (statusFilter === 'inactive' && isActive) return false;
+
+      // 3. Price filter
+      if (priceFilter === 'free' && Number(t.price) !== 0) return false;
+      if (priceFilter === 'paid' && Number(t.price) <= 0) return false;
+
+      return true;
+    });
+  }, [themes, search, statusFilter, priceFilter]);
 
   const openNew = () => {
     setEditingId(null);
@@ -687,7 +704,6 @@ export const AdminPanel: React.FC = () => {
     await loadAll();
   };
 
-  const activeOf = (id: string) => themes.find((t) => t.id === id)?.isActive ?? true;
 
   const handleSaveCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1057,6 +1073,29 @@ export const AdminPanel: React.FC = () => {
                   className={`${inputCls} pr-9`}
                   aria-label="بحث في الثيمات"
                 />
+              </div>
+              {/* فلاتر الثيمات: الظهور والسعر */}
+              <div className="flex items-center gap-2">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'inactive')}
+                  className="px-3 py-2 text-xs font-bold bg-white border border-slate-300 rounded-xl text-[#0b132b] focus:outline-none focus:border-[#0b132b] transition cursor-pointer"
+                  aria-label="فلترة حسب الظهور"
+                >
+                  <option value="all">كل الظهور (الكل)</option>
+                  <option value="active">ظاهر في المتجر</option>
+                  <option value="inactive">مخفي من المتجر</option>
+                </select>
+                <select
+                  value={priceFilter}
+                  onChange={(e) => setPriceFilter(e.target.value as 'all' | 'free' | 'paid')}
+                  className="px-3 py-2 text-xs font-bold bg-white border border-slate-300 rounded-xl text-[#0b132b] focus:outline-none focus:border-[#0b132b] transition cursor-pointer"
+                  aria-label="فلترة حسب السعر"
+                >
+                  <option value="all">كل الأسعار (الكل)</option>
+                  <option value="paid">مدفوع</option>
+                  <option value="free">مجاني (0 ج.م)</option>
+                </select>
               </div>
               <button onClick={openNew} className={btnPrimary}>
                 <Plus className="w-4 h-4" />
