@@ -366,7 +366,7 @@ export const AdminPanel: React.FC = () => {
   const [listError, setListError] = useState('');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
-  const [priceFilter, setPriceFilter] = useState<'all' | 'free' | 'paid'>('all');
+  const [priceFilter, setPriceFilter] = useState<'all' | 'desc' | 'asc' | 'paid' | 'free'>('all');
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -616,6 +616,14 @@ export const AdminPanel: React.FC = () => {
       if (priceFilter === 'paid' && Number(t.price) <= 0) return false;
 
       return true;
+    }).sort((a, b) => {
+      if (priceFilter === 'desc') {
+        return Number(b.price) - Number(a.price);
+      }
+      if (priceFilter === 'asc') {
+        return Number(a.price) - Number(b.price);
+      }
+      return 0;
     });
   }, [themes, search, statusFilter, priceFilter]);
 
@@ -1088,13 +1096,15 @@ export const AdminPanel: React.FC = () => {
                 </select>
                 <select
                   value={priceFilter}
-                  onChange={(e) => setPriceFilter(e.target.value as 'all' | 'free' | 'paid')}
+                  onChange={(e) => setPriceFilter(e.target.value as 'all' | 'desc' | 'asc' | 'paid' | 'free')}
                   className="px-3 py-2 text-xs font-bold bg-white border border-slate-300 rounded-xl text-[#0b132b] focus:outline-none focus:border-[#0b132b] transition cursor-pointer"
-                  aria-label="فلترة حسب السعر"
+                  aria-label="فلترة وترتيب حسب السعر"
                 >
-                  <option value="all">كل الأسعار (الكل)</option>
-                  <option value="paid">مدفوع</option>
-                  <option value="free">مجاني (0 ج.م)</option>
+                  <option value="all">كل الأسعار (الافتراضي)</option>
+                  <option value="desc">السعر: من الأكبر للأصغر</option>
+                  <option value="asc">السعر: من الأصغر للأكبر</option>
+                  <option value="paid">مدفوع فقط</option>
+                  <option value="free">مجاني فقط (0 ج.م)</option>
                 </select>
               </div>
               <button onClick={openNew} className={btnPrimary}>
