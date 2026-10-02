@@ -19,9 +19,12 @@ import {
   Megaphone,
   MessageCircle,
   Wallet,
+  Download,
+  ShieldCheck,
+  ShieldAlert,
 } from 'lucide-react';
 import { getSupabaseClient, isSupabaseConnected, signInAdmin, signOutAdmin, getAdminEmail, onAdminAuthChange } from '../lib/supabase';
-import { mapThemeRow, clearCatalogCache } from '../lib/store';
+import { mapThemeRow, clearCatalogCache, themeHasLicense } from '../lib/store';
 import {
   fetchPublicSettings,
   saveStoreSettings,
@@ -1355,6 +1358,8 @@ export const AdminPanel: React.FC = () => {
                       <th className="text-right font-bold p-3">القالب</th>
                       <th className="text-right font-bold p-3">التصنيف</th>
                       <th className="text-right font-bold p-3">السعر</th>
+                      <th className="text-right font-bold p-3">التحميلات</th>
+                      <th className="text-right font-bold p-3">الترخيص</th>
                       <th className="text-right font-bold p-3">الظهور</th>
                       <th className="text-right font-bold p-3">إجراءات</th>
                     </tr>
@@ -1362,6 +1367,7 @@ export const AdminPanel: React.FC = () => {
                   <tbody className="divide-y divide-slate-100">
                     {filteredThemes.map((t) => {
                       const active = activeOf(t.id);
+                      const hasLicense = themeHasLicense(t);
                       return (
                         <tr key={t.id} className="hover:bg-slate-50/60">
                           <td className="p-3">
@@ -1379,6 +1385,25 @@ export const AdminPanel: React.FC = () => {
                           </td>
                           <td className="p-3 text-slate-600">{t.categoryNameAr}</td>
                           <td className="p-3 font-mono font-bold">${t.price}</td>
+                          <td className="p-3 font-mono font-bold">
+                            <span className="inline-flex items-center gap-1.5 text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg">
+                              <Download className="w-3.5 h-3.5 text-slate-500" aria-hidden="true" />
+                              <span>{t.downloadsCount || 0}</span>
+                            </span>
+                          </td>
+                          <td className="p-3">
+                            {hasLicense ? (
+                              <span className="inline-flex items-center gap-1.5 text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-lg font-bold text-[11px]" title={t.gplLicenseType}>
+                                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" aria-hidden="true" />
+                                <span>مرخص ({t.gplLicenseType})</span>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1.5 text-amber-800 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-lg font-bold text-[11px]">
+                                <ShieldAlert className="w-3.5 h-3.5 text-amber-600" aria-hidden="true" />
+                                <span>بدون رخصة</span>
+                              </span>
+                            )}
+                          </td>
                           <td className="p-3">
                             <button
                               onClick={() => handleToggleActive(t)}
@@ -1406,7 +1431,7 @@ export const AdminPanel: React.FC = () => {
                     })}
                     {filteredThemes.length === 0 && (
                       <tr>
-                        <td colSpan={5} className="p-8 text-center text-slate-400">
+                        <td colSpan={7} className="p-8 text-center text-slate-400">
                           {loading ? 'جاري التحميل...' : 'لا توجد ثيمات — أضف أول قالب من الزر بالأعلى'}
                         </td>
                       </tr>
