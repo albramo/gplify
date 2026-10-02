@@ -373,6 +373,7 @@ export const AdminPanel: React.FC = () => {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [themeFormTab, setThemeFormTab] = useState<'general' | 'taxonomy' | 'details' | 'content' | 'links' | 'json'>('general');
   const [form, setForm] = useState<ThemeForm>(emptyThemeForm());
   const [formError, setFormError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -630,20 +631,34 @@ export const AdminPanel: React.FC = () => {
     });
   }, [themes, search, statusFilter, priceFilter]);
 
+  useEffect(() => {
+    if (!showForm) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowForm(false);
+    };
+    document.addEventListener('keydown', onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [showForm]);
+
   const openNew = () => {
     setEditingId(null);
     setForm(emptyThemeForm());
     setFormError('');
+    setThemeFormTab('general');
     setShowForm(true);
-    window.scrollTo({ top: 0 });
   };
 
   const openEdit = (t: GPLTheme) => {
     setEditingId(t.id);
     setForm(formFromTheme(t));
     setFormError('');
+    setThemeFormTab('general');
     setShowForm(true);
-    window.scrollTo({ top: 0 });
   };
 
   const handleSaveTheme = async (e: React.FormEvent) => {
@@ -1116,237 +1131,332 @@ export const AdminPanel: React.FC = () => {
               </button>
             </div>
 
-            {/* Form */}
+            {/* Theme Form Modal */}
             {showForm && (
-              <form onSubmit={handleSaveTheme} className="bg-white rounded-2xl border-2 border-[#0b132b] p-6 space-y-5 shadow-lg">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-base font-bold">{editingId ? 'تعديل الثيم' : 'إضافة ثيم جديد'}</h2>
-                  <button type="button" onClick={() => setShowForm(false)} className="p-2 hover:bg-slate-100 rounded-xl cursor-pointer" aria-label="إغلاق النموذج">
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in"
+                onClick={() => setShowForm(false)}
+                role="dialog"
+                aria-modal="true"
+                aria-label={editingId ? 'تعديل الثيم' : 'إضافة ثيم جديد'}
+              >
+                <form
+                  onSubmit={handleSaveTheme}
+                  onClick={(e) => e.stopPropagation()}
+                  className="bg-white w-full max-w-4xl rounded-2xl border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[90vh] text-[#0b132b]"
+                >
+                  {/* Fixed/Sticky Header with Title, Save Button, and Close Button */}
+                  <div className="sticky top-0 z-20 bg-white border-b border-slate-200 px-5 sm:px-6 py-4 flex items-center justify-between gap-3 shrink-0 shadow-sm">
+                    <div className="min-w-0">
+                      <h2 className="text-base sm:text-lg font-bold text-[#0b132b] truncate">
+                        {editingId ? `تعديل الثيم: ${form.title || editingId}` : 'إضافة ثيم جديد'}
+                      </h2>
+                      <p className="text-[11px] text-slate-400 font-mono mt-0.5" dir="ltr">
+                        {form.slug ? `slug: ${form.slug}` : 'قالب جديد'}
+                      </p>
+                    </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className={labelCls} htmlFor="f-title">اسم القالب (عربي) *</label>
-                    <input id="f-title" className={inputCls} value={form.title} onChange={(e) => set({ title: e.target.value })} required />
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-titleEn">الاسم الإنجليزي</label>
-                    <input id="f-titleEn" className={inputCls} value={form.titleEn} onChange={(e) => set({ titleEn: e.target.value })} dir="ltr" />
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-slug">الرابط المختصر (slug) *</label>
-                    <input id="f-slug" className={inputCls} value={form.slug} onChange={(e) => set({ slug: e.target.value })} dir="ltr" placeholder="astra-pro" />
-                    <p className="text-[11px] text-slate-400 mt-1">يظهر في رابط صفحة القالب بعد /theme/ — غيّره بحذر لو الرابط متشير.</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className={labelCls} htmlFor="f-price">السعر (ج.م)</label>
-                      <input id="f-price" type="number" min="0" step="1" className={inputCls} value={form.price} onChange={(e) => set({ price: e.target.value })} dir="ltr" />
-                    </div>
-                    <div>
-                      <label className={labelCls} htmlFor="f-originalPrice">السعر قبل الخصم (ج.م)</label>
-                      <input id="f-originalPrice" type="number" min="0" step="1" className={inputCls} value={form.originalPrice} onChange={(e) => set({ originalPrice: e.target.value })} dir="ltr" />
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button type="submit" disabled={saving} className={btnPrimary}>
+                        <Save className="w-4 h-4" />
+                        <span>{saving ? 'جاري الحفظ...' : editingId ? 'حفظ التعديلات' : 'إضافة للكتالوج'}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowForm(false)}
+                        className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition cursor-pointer"
+                        aria-label="إغلاق النافذة"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
                     </div>
                   </div>
-                  <div className="sm:col-span-2">
-                    <span className={labelCls}>التصنيفات * (اختار واحد أو أكتر — الأول هو الأساسي)</span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {settingsForm.categories.map((c) => {
-                        const Icon = resolveCategoryIcon(c.icon);
-                        const checked = form.categories.includes(c.id);
-                        const isPrimary = form.categories[0] === c.id;
-                        return (
-                          <label
-                            key={c.id}
-                            className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold cursor-pointer transition ${
-                              checked
-                                ? 'bg-[#0b132b] text-white border-[#0b132b]'
-                                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={checked}
-                              onChange={() => toggleFormCategory(c.id)}
-                              className="w-4 h-4 rounded accent-white cursor-pointer"
-                            />
-                            <Icon className="w-4 h-4 shrink-0" />
-                            <span className="flex-1">{c.nameAr}</span>
-                            {isPrimary && checked && (
-                              <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded">أساسي</span>
-                            )}
-                          </label>
-                        );
-                      })}
-                    </div>
-                    <p className="text-[11px] text-slate-400 mt-1">تعديل التصنيفات نفسها من تبويب الإعدادات.</p>
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-categoryNameAr">اسم التصنيف بالعربية</label>
-                    <input id="f-categoryNameAr" className={inputCls} value={form.categoryNameAr} onChange={(e) => set({ categoryNameAr: e.target.value })} />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <span className={labelCls}>المنصات * (اختار واحدة أو أكتر — الأولى هي الأساسية)</span>
-                    <div className="flex flex-wrap gap-2">
-                      {settingsForm.platforms.map((p) => {
-                        const checked = form.platforms.includes(p.id);
-                        const isPrimary = form.platforms[0] === p.id;
-                        return (
-                          <label
-                            key={p.id}
-                            className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold cursor-pointer transition ${
-                              checked
-                                ? 'bg-[#1e3a8a] text-white border-[#1e3a8a]'
-                                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={checked}
-                              onChange={() => toggleFormPlatform(p.id)}
-                              className="w-4 h-4 rounded accent-white cursor-pointer"
-                            />
-                            <span dir="ltr">{p.label}</span>
-                            {isPrimary && checked && (
-                              <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded">أساسية</span>
-                            )}
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-license">نوع الترخيص (اختياري)</label>
-                    <select id="f-license" className={inputCls} value={form.gplLicenseType} onChange={(e) => set({ gplLicenseType: e.target.value })}>
-                      <option value="">— بدون ترخيص (يُخفى من صفحة الثيم) —</option>
-                      {LICENSE_OPTIONS.map((l) => (
-                        <option key={l} value={l}>{l}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-badge">شارة الثيم (اختياري)</label>
-                    <select id="f-badge" className={inputCls} value={form.badge} onChange={(e) => set({ badge: e.target.value })}>
-                      {BADGE_OPTIONS.map((b) => (
-                        <option key={b.id} value={b.id}>{b.nameAr}</option>
-                      ))}
-                    </select>
-                    <p className="text-[11px] text-slate-400 mt-1">تظهر كشارة ملونة على كارت الثيم وفي صفحة الثيم.</p>
-                  </div>
-                  <div className="grid grid-cols-3 gap-3">
-                    <div>
-                      <label className={labelCls} htmlFor="f-rating">التقييم</label>
-                      <input id="f-rating" type="number" min="0" max="5" step="0.1" className={inputCls} value={form.rating} onChange={(e) => set({ rating: e.target.value })} dir="ltr" />
-                    </div>
-                    <div>
-                      <label className={labelCls} htmlFor="f-reviews">عدد التقييمات</label>
-                      <input id="f-reviews" type="number" min="0" step="1" className={inputCls} value={form.reviewsCount} onChange={(e) => set({ reviewsCount: e.target.value })} dir="ltr" />
-                    </div>
-                    <div>
-                      <label className={labelCls} htmlFor="f-downloads">التحميلات</label>
-                      <input id="f-downloads" type="number" min="0" step="1" className={inputCls} value={form.downloadsCount} onChange={(e) => set({ downloadsCount: e.target.value })} dir="ltr" />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className={labelCls} htmlFor="f-version">الإصدار</label>
-                      <input id="f-version" className={inputCls} value={form.version} onChange={(e) => set({ version: e.target.value })} dir="ltr" />
-                    </div>
-                    <div>
-                      <label className={labelCls} htmlFor="f-updated">تاريخ التحديث</label>
-                      <input id="f-updated" type="date" className={inputCls} value={form.updatedDate} onChange={(e) => set({ updatedDate: e.target.value })} />
-                    </div>
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-fileSize">حجم الملف</label>
-                    <input id="f-fileSize" className={inputCls} value={form.fileSize} onChange={(e) => set({ fileSize: e.target.value })} dir="ltr" placeholder="14.2 MB" />
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-demo">رابط الديمو</label>
-                    <input id="f-demo" className={inputCls} value={form.demoUrl} onChange={(e) => set({ demoUrl: e.target.value })} dir="ltr" placeholder="https://..." />
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-download">رابط التحميل المباشر (Backblaze ZIP) *</label>
-                    <input id="f-download" className={inputCls} value={form.downloadUrl} onChange={(e) => set({ downloadUrl: e.target.value })} dir="ltr" placeholder="https://utfs.io/f/..." />
-                    <p className="text-[11px] text-slate-400 mt-1">ارفع ملف الـ ZIP على UploadThing والصق رابط الملف هنا — هو اللي بيتبعت للعميل في الإيميل.</p>
-                  </div>
-                </div>
 
-                <div>
-                  <label className={labelCls} htmlFor="f-short">وصف مختصر</label>
-                  <textarea id="f-short" rows={2} className={inputCls} value={form.shortDescription} onChange={(e) => set({ shortDescription: e.target.value })} />
-                </div>
-                <div>
-                  <label className={labelCls} htmlFor="f-desc">الوصف الكامل</label>
-                  <textarea id="f-desc" rows={4} className={inputCls} value={form.description} onChange={(e) => set({ description: e.target.value })} />
-                </div>
+                  {/* Divided Sections Navigation Bar */}
+                  <div className="px-4 sm:px-6 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center gap-1.5 overflow-x-auto shrink-0 scrollbar-none">
+                    {[
+                      { id: 'general', label: 'الأساسية والأسعار' },
+                      { id: 'taxonomy', label: 'التصنيفات والترخيص' },
+                      { id: 'details', label: 'المواصفات والتقييم' },
+                      { id: 'content', label: 'الوصف والمميزات' },
+                      { id: 'links', label: 'الروابط والملفات' },
+                      { id: 'json', label: 'السجل والأسئلة' },
+                    ].map((tab) => {
+                      const active = themeFormTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          type="button"
+                          onClick={() => setThemeFormTab(tab.id as any)}
+                          className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition cursor-pointer ${
+                            active
+                              ? 'bg-[#0b132b] text-white shadow-sm'
+                              : 'text-slate-600 hover:bg-slate-200/70 hover:text-slate-900'
+                          }`}
+                        >
+                          {tab.label}
+                        </button>
+                      );
+                    })}
+                  </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className={labelCls} htmlFor="f-thumb">رابط الصورة الرئيسية</label>
-                    <input id="f-thumb" className={inputCls} value={form.thumbnail} onChange={(e) => set({ thumbnail: e.target.value })} dir="ltr" placeholder="https://..." />
-                    {safeUrl(form.thumbnail) ? (
-                      <img src={safeUrl(form.thumbnail)} alt="معاينة" className="mt-2 w-full h-32 object-cover rounded-xl border border-slate-200" referrerPolicy="no-referrer" />
-                    ) : null}
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-shots">لقطات الشاشة (رابط في كل سطر)</label>
-                    <textarea id="f-shots" rows={4} className={inputCls} value={form.screenshots} onChange={(e) => set({ screenshots: e.target.value })} dir="ltr" />
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-features">المميزات (سطر لكل ميزة)</label>
-                    <textarea id="f-features" rows={5} className={inputCls} value={form.features} onChange={(e) => set({ features: e.target.value })} />
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-compat">التوافق (سطر لكل عنصر)</label>
-                    <textarea id="f-compat" rows={5} className={inputCls} value={form.compatibility} onChange={(e) => set({ compatibility: e.target.value })} dir="ltr" />
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-plugins">إضافات مرفقة (سطر لكل إضافة)</label>
-                    <textarea id="f-plugins" rows={3} className={inputCls} value={form.includedPlugins} onChange={(e) => set({ includedPlugins: e.target.value })} />
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-tags">وسوم (سطر لكل وسم)</label>
-                    <textarea id="f-tags" rows={3} className={inputCls} value={form.tags} onChange={(e) => set({ tags: e.target.value })} dir="ltr" />
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-changelog">سجل التحديثات (JSON)</label>
-                    <textarea id="f-changelog" rows={5} className={`${inputCls} font-mono`} value={form.changelog} onChange={(e) => set({ changelog: e.target.value })} dir="ltr" />
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="f-faq">الأسئلة الشائعة (JSON)</label>
-                    <textarea id="f-faq" rows={5} className={`${inputCls} font-mono`} value={form.faq} onChange={(e) => set({ faq: e.target.value })} dir="ltr" />
-                  </div>
-                </div>
+                  {/* Scrollable Modal Content */}
+                  <div className="p-5 sm:p-6 overflow-y-auto space-y-5 flex-1">
+                    {formError && (
+                      <p className="text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl p-3 font-medium" role="alert">
+                        {formError}
+                      </p>
+                    )}
 
-                <div className="flex flex-wrap gap-4 pt-1">
-                  <label className="flex items-center gap-2 text-xs font-bold cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={form.isActive}
-                      onChange={(e) => set({ isActive: e.target.checked })}
-                      className="w-4 h-4 rounded accent-[#0b132b] cursor-pointer"
-                    />
-                    <span>ظاهر في المتجر</span>
-                  </label>
-                </div>
+                    {/* Tab 1: البيانات الأساسية والأسعار */}
+                    {themeFormTab === 'general' && (
+                      <div className="space-y-4 animate-in fade-in">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className={labelCls} htmlFor="f-title">اسم القالب (عربي) *</label>
+                            <input id="f-title" className={inputCls} value={form.title} onChange={(e) => set({ title: e.target.value })} required />
+                          </div>
+                          <div>
+                            <label className={labelCls} htmlFor="f-titleEn">الاسم الإنجليزي</label>
+                            <input id="f-titleEn" className={inputCls} value={form.titleEn} onChange={(e) => set({ titleEn: e.target.value })} dir="ltr" />
+                          </div>
+                          <div>
+                            <label className={labelCls} htmlFor="f-slug">الرابط المختصر (slug) *</label>
+                            <input id="f-slug" className={inputCls} value={form.slug} onChange={(e) => set({ slug: e.target.value })} dir="ltr" placeholder="astra-pro" />
+                            <p className="text-[11px] text-slate-400 mt-1">يظهر في رابط صفحة القالب بعد /theme/ — غيّره بحذر لو الرابط متشير.</p>
+                          </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <label className={labelCls} htmlFor="f-price">السعر (ج.م)</label>
+                              <input id="f-price" type="number" min="0" step="1" className={inputCls} value={form.price} onChange={(e) => set({ price: e.target.value })} dir="ltr" />
+                            </div>
+                            <div>
+                              <label className={labelCls} htmlFor="f-originalPrice">السعر قبل الخصم (ج.م)</label>
+                              <input id="f-originalPrice" type="number" min="0" step="1" className={inputCls} value={form.originalPrice} onChange={(e) => set({ originalPrice: e.target.value })} dir="ltr" />
+                            </div>
+                          </div>
+                          <div>
+                            <label className={labelCls} htmlFor="f-badge">شارة الثيم (اختياري)</label>
+                            <select id="f-badge" className={inputCls} value={form.badge} onChange={(e) => set({ badge: e.target.value })}>
+                              {BADGE_OPTIONS.map((b) => (
+                                <option key={b.id} value={b.id}>{b.nameAr}</option>
+                              ))}
+                            </select>
+                            <p className="text-[11px] text-slate-400 mt-1">تظهر كشارة ملونة على كارت الثيم وفي صفحة الثيم.</p>
+                          </div>
+                          <div className="flex items-center pt-6">
+                            <label className="flex items-center gap-2 text-xs font-bold cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={form.isActive}
+                                onChange={(e) => set({ isActive: e.target.checked })}
+                                className="w-4 h-4 rounded accent-[#0b132b] cursor-pointer"
+                              />
+                              <span>ظاهر في المتجر</span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
-                {formError && (
-                  <p className="text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl p-2.5" role="alert">{formError}</p>
-                )}
+                    {/* Tab 2: التصنيفات والترخيص */}
+                    {themeFormTab === 'taxonomy' && (
+                      <div className="space-y-4 animate-in fade-in">
+                        <div>
+                          <span className={labelCls}>التصنيفات * (اختار واحد أو أكتر — الأول هو الأساسي)</span>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+                            {settingsForm.categories.map((c) => {
+                              const Icon = resolveCategoryIcon(c.icon);
+                              const checked = form.categories.includes(c.id);
+                              const isPrimary = form.categories[0] === c.id;
+                              return (
+                                <label
+                                  key={c.id}
+                                  className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold cursor-pointer transition ${
+                                    checked
+                                      ? 'bg-[#0b132b] text-white border-[#0b132b]'
+                                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                                  }`}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={checked}
+                                    onChange={() => toggleFormCategory(c.id)}
+                                    className="w-4 h-4 rounded accent-white cursor-pointer"
+                                  />
+                                  <Icon className="w-4 h-4 shrink-0" />
+                                  <span className="flex-1">{c.nameAr}</span>
+                                  {isPrimary && checked && (
+                                    <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded">أساسي</span>
+                                  )}
+                                </label>
+                              );
+                            })}
+                          </div>
+                          <p className="text-[11px] text-slate-400 mt-1">تعديل التصنيفات نفسها من تبويب الإعدادات.</p>
+                        </div>
 
-                <div className="flex gap-2">
-                  <button type="submit" disabled={saving} className={btnPrimary}>
-                    <Save className="w-4 h-4" />
-                    <span>{saving ? 'جاري الحفظ...' : editingId ? 'حفظ التعديلات' : 'إضافة للكتالوج'}</span>
-                  </button>
-                  <button type="button" onClick={() => setShowForm(false)} className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-xs font-bold rounded-xl transition cursor-pointer">
-                    إلغاء
-                  </button>
-                </div>
-              </form>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className={labelCls} htmlFor="f-categoryNameAr">اسم التصنيف بالعربية</label>
+                            <input id="f-categoryNameAr" className={inputCls} value={form.categoryNameAr} onChange={(e) => set({ categoryNameAr: e.target.value })} />
+                          </div>
+                          <div>
+                            <label className={labelCls} htmlFor="f-license">نوع الترخيص (اختياري)</label>
+                            <select id="f-license" className={inputCls} value={form.gplLicenseType} onChange={(e) => set({ gplLicenseType: e.target.value })}>
+                              <option value="">— بدون ترخيص (يُخفى من صفحة الثيم) —</option>
+                              {LICENSE_OPTIONS.map((l) => (
+                                <option key={l} value={l}>{l}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
+                        <div>
+                          <span className={labelCls}>المنصات * (اختار واحدة أو أكتر — الأولى هي الأساسية)</span>
+                          <div className="flex flex-wrap gap-2 mt-1">
+                            {settingsForm.platforms.map((p) => {
+                              const checked = form.platforms.includes(p.id);
+                              const isPrimary = form.platforms[0] === p.id;
+                              return (
+                                <label
+                                  key={p.id}
+                                  className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold cursor-pointer transition ${
+                                    checked
+                                      ? 'bg-[#1e3a8a] text-white border-[#1e3a8a]'
+                                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                                  }`}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={checked}
+                                    onChange={() => toggleFormPlatform(p.id)}
+                                    className="w-4 h-4 rounded accent-white cursor-pointer"
+                                  />
+                                  <span dir="ltr">{p.label}</span>
+                                  {isPrimary && checked && (
+                                    <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded">أساسية</span>
+                                  )}
+                                </label>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Tab 3: المواصفات والتقييم */}
+                    {themeFormTab === 'details' && (
+                      <div className="space-y-4 animate-in fade-in">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <div>
+                            <label className={labelCls} htmlFor="f-rating">التقييم</label>
+                            <input id="f-rating" type="number" min="0" max="5" step="0.1" className={inputCls} value={form.rating} onChange={(e) => set({ rating: e.target.value })} dir="ltr" />
+                          </div>
+                          <div>
+                            <label className={labelCls} htmlFor="f-reviews">عدد التقييمات</label>
+                            <input id="f-reviews" type="number" min="0" step="1" className={inputCls} value={form.reviewsCount} onChange={(e) => set({ reviewsCount: e.target.value })} dir="ltr" />
+                          </div>
+                          <div>
+                            <label className={labelCls} htmlFor="f-downloads">التحميلات</label>
+                            <input id="f-downloads" type="number" min="0" step="1" className={inputCls} value={form.downloadsCount} onChange={(e) => set({ downloadsCount: e.target.value })} dir="ltr" />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <div>
+                            <label className={labelCls} htmlFor="f-version">الإصدار</label>
+                            <input id="f-version" className={inputCls} value={form.version} onChange={(e) => set({ version: e.target.value })} dir="ltr" />
+                          </div>
+                          <div>
+                            <label className={labelCls} htmlFor="f-updated">تاريخ التحديث</label>
+                            <input id="f-updated" type="date" className={inputCls} value={form.updatedDate} onChange={(e) => set({ updatedDate: e.target.value })} />
+                          </div>
+                          <div>
+                            <label className={labelCls} htmlFor="f-fileSize">حجم الملف</label>
+                            <input id="f-fileSize" className={inputCls} value={form.fileSize} onChange={(e) => set({ fileSize: e.target.value })} dir="ltr" placeholder="14.2 MB" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Tab 4: الوصف والمميزات */}
+                    {themeFormTab === 'content' && (
+                      <div className="space-y-4 animate-in fade-in">
+                        <div>
+                          <label className={labelCls} htmlFor="f-short">وصف مختصر</label>
+                          <textarea id="f-short" rows={2} className={inputCls} value={form.shortDescription} onChange={(e) => set({ shortDescription: e.target.value })} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="f-desc">الوصف الكامل</label>
+                          <textarea id="f-desc" rows={4} className={inputCls} value={form.description} onChange={(e) => set({ description: e.target.value })} />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className={labelCls} htmlFor="f-features">المميزات (سطر لكل ميزة)</label>
+                            <textarea id="f-features" rows={4} className={inputCls} value={form.features} onChange={(e) => set({ features: e.target.value })} />
+                          </div>
+                          <div>
+                            <label className={labelCls} htmlFor="f-compat">التوافق (سطر لكل عنصر)</label>
+                            <textarea id="f-compat" rows={4} className={inputCls} value={form.compatibility} onChange={(e) => set({ compatibility: e.target.value })} dir="ltr" />
+                          </div>
+                          <div>
+                            <label className={labelCls} htmlFor="f-plugins">إضافات مرفقة (سطر لكل إضافة)</label>
+                            <textarea id="f-plugins" rows={3} className={inputCls} value={form.includedPlugins} onChange={(e) => set({ includedPlugins: e.target.value })} />
+                          </div>
+                          <div>
+                            <label className={labelCls} htmlFor="f-tags">وسوم (سطر لكل وسم)</label>
+                            <textarea id="f-tags" rows={3} className={inputCls} value={form.tags} onChange={(e) => set({ tags: e.target.value })} dir="ltr" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Tab 5: الروابط والملفات */}
+                    {themeFormTab === 'links' && (
+                      <div className="space-y-4 animate-in fade-in">
+                        <div>
+                          <label className={labelCls} htmlFor="f-download">رابط التحميل المباشر (Backblaze ZIP) *</label>
+                          <input id="f-download" className={inputCls} value={form.downloadUrl} onChange={(e) => set({ downloadUrl: e.target.value })} dir="ltr" placeholder="https://utfs.io/f/..." />
+                          <p className="text-[11px] text-slate-400 mt-1">ارفع ملف الـ ZIP على UploadThing والصق رابط الملف هنا — هو اللي بيتبعت للعميل في الإيميل.</p>
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="f-demo">رابط الديمو</label>
+                          <input id="f-demo" className={inputCls} value={form.demoUrl} onChange={(e) => set({ demoUrl: e.target.value })} dir="ltr" placeholder="https://..." />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className={labelCls} htmlFor="f-thumb">رابط الصورة الرئيسية</label>
+                            <input id="f-thumb" className={inputCls} value={form.thumbnail} onChange={(e) => set({ thumbnail: e.target.value })} dir="ltr" placeholder="https://..." />
+                            {safeUrl(form.thumbnail) ? (
+                              <img src={safeUrl(form.thumbnail)} alt="معاينة" className="mt-2 w-full h-32 object-cover rounded-xl border border-slate-200" referrerPolicy="no-referrer" />
+                            ) : null}
+                          </div>
+                          <div>
+                            <label className={labelCls} htmlFor="f-shots">لقطات الشاشة (رابط في كل سطر)</label>
+                            <textarea id="f-shots" rows={4} className={inputCls} value={form.screenshots} onChange={(e) => set({ screenshots: e.target.value })} dir="ltr" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Tab 6: السجل والأسئلة الشائعة */}
+                    {themeFormTab === 'json' && (
+                      <div className="space-y-4 animate-in fade-in">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className={labelCls} htmlFor="f-changelog">سجل التحديثات (JSON)</label>
+                            <textarea id="f-changelog" rows={6} className={`${inputCls} font-mono text-xs`} value={form.changelog} onChange={(e) => set({ changelog: e.target.value })} dir="ltr" />
+                          </div>
+                          <div>
+                            <label className={labelCls} htmlFor="f-faq">الأسئلة الشائعة (JSON)</label>
+                            <textarea id="f-faq" rows={6} className={`${inputCls} font-mono text-xs`} value={form.faq} onChange={(e) => set({ faq: e.target.value })} dir="ltr" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </form>
+              </div>
             )}
 
             {/* List */}
