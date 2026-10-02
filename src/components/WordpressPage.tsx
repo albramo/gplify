@@ -189,13 +189,13 @@ export const WordpressPage: React.FC<WordpressPageProps> = ({
           <span>نسخ أصلية 100% — ووكومرس وإليمنتور مدعومة</span>
         </p>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0b132b] font-tajawal leading-snug">
-          تحميل قوالب وردبريس مجاني بديل آمن | ثيمات WordPress الأصلية
+          البديل الآمن لقوالب وردبريس المجانية | ثيمات WordPress الأصلية
         </h1>
         <p className="text-sm text-slate-600 leading-loose max-w-3xl">
-          إذا كنت تبحث عن <strong>قوالب وردبريس مجاني</strong> أو <strong>ثيمات مجانيه</strong> و<strong>قوالب ووكومرس</strong> المخصصة للمتاجر والمواقع، فإن gplify يوفر لك أشهر قوالب WordPress وإليمنتور بملفات أصلية 100% ومفحوصة أمنياً بديل النسخ المجانية المضروبة (nulled). تشتري مرة واحدة برخصة GPL وبسعر رمزي ومخفض جداً بالجنيه المصري لاستخدامها على جميع مواقعك مع تسليم آلي فوري عبر البريد الإلكتروني.
+          إذا كنت تبحث عن <strong>قوالب وردبريس مجاني</strong> أو <strong>قوالب وردبريس مجانيه</strong> أو <strong>قوالب وردبريس مجانية</strong> و<strong>ثيمات مجانيه</strong> و<strong>ثيمات مجانية</strong> و<strong>قوالب مجانيه</strong> و<strong>قوالب ووكومرس</strong> المخصصة للمتاجر والمواقع، فإن gplify يوفر لك أشهر قوالب WordPress وإليمنتور بملفات أصلية 100% ومفحوصة أمنياً بديل النسخ المجانية المضروبة (nulled). تشتري مرة واحدة برخصة GPL وبسعر رمزي ومخفض جداً بالجنيه المصري لاستخدامها على جميع مواقعك مع تسليم آلي فوري عبر البريد الإلكتروني.
         </p>
         <div className="flex flex-wrap gap-2 pt-1 text-[11px] text-slate-500">
-          {['قوالب وردبريس مجاني', 'ثيمات مجانيه', 'ثيمات ووردبريس gpl', 'قوالب ووردبريس', 'قوالب ووكومرس', 'قالب ووردبريس عربي'].map((k) => (
+          {['قوالب وردبريس GPL', 'ثيمات ووردبريس الأصلية', 'قوالب ووكومرس', 'ثيمات ووردبريس gpl', 'قوالب ووردبريس', 'قالب ووردبريس عربي', 'قوالب إليمنتور'].map((k) => (
             <span key={k} className="px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 font-bold text-slate-600">
               {k}
             </span>

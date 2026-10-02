@@ -69,19 +69,19 @@ export const HomeSeoSections: React.FC<{ themesCount: number }> = ({ themesCount
       <section aria-label="دليل تحميل قوالب GPL وقوالب شوبيفاي ووردبريس بالعربي" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 space-y-6 shadow-xs">
           <div className="max-w-3xl">
-            <p className="text-xs font-bold text-[#1e3a8a] mb-2">ثيمات شوبيفاي مجانيه وقوالب وردبريس مجاني — أفضل بديل آمن لمتاجر العرب</p>
+            <p className="text-xs font-bold text-[#1e3a8a] mb-2">البديل الآمن للباحثين عن الثيمات المجانية — لمتاجر العرب</p>
             <h2 className="text-xl sm:text-2xl font-extrabold text-[#0b132b] font-tajawal leading-relaxed">
-              تحميل قوالب شوبيفاي مجاني بديل آمن وقوالب وردبريس مجاني وثيمات shopify الأصلية
+              البديل الآمن لقوالب شوبيفاي ووردبريس المجانية: ثيمات shopify الأصلية
             </h2>
           </div>
           <div className="grid md:grid-cols-2 gap-6 text-sm text-slate-600 leading-loose">
             <div className="space-y-3">
               <h3 className="font-bold text-[#0b132b]">لماذا تبحث عن البديل المضمون للنسخ المجانية المضروبة؟</h3>
               <p>
-                كثير من أصحاب المتاجر والمواقع يبحثون عن <strong>قوالب شوبيفاي مجاني</strong> أو <strong>ثيمات شوبيفاي مجانيه</strong>، و<strong>قوالب وردبريس مجاني</strong> و<strong>ثيمات مجانيه</strong> على الإنترنت، ولكن الصدمة تكون بوجود فيروسات، برمجيات خبيثة، وأكواد تجسس تؤدي لإغلاق المتجر أو حظر الدومين في محركات البحث.
+                كثير من أصحاب المتاجر والمواقع يبحثون عن <strong>قوالب شوبيفاي مجاني</strong> و<strong>قوالب شوبيفاي مجانيه</strong> و<strong>قوالب شوبيفاي مجانية</strong> أو <strong>ثيمات شوبيفاي مجانيه</strong>، و<strong>قوالب وردبريس مجاني</strong> و<strong>قوالب وردبريس مجانيه</strong> و<strong>ثيمات مجانيه</strong> و<strong>قوالب مجانيه</strong> على الإنترنت، ولكن الصدمة تكون بوجود فيروسات، برمجيات خبيثة، وأكواد تجسس تؤدي لإغلاق المتجر أو حظر الدومين في محركات البحث.
               </p>
               <p>
-                في متجر <strong>gplify</strong> المخصص للوطن العربي ومصر، نوفر لك الحل الأمثل: تحميل <strong>قوالب shopify مجانيه</strong> بديل آمن، بملفات أصلية 100% ومفحوصة أمنياً بترخيص GPL وبسعر مخفض جداً بالجنيه المصري. تحصل على نفس الملفات النظيفة من المطور بدون مخاطرة، مع تسليم رقمي فوري عبر البريد الإلكتروني وتوافق كامل مع فودافون كاش وانستاباي.
+                في متجر <strong>gplify</strong> المخصص للوطن العربي ومصر، نوفر لك الحل الأمثل للباحثين عن <strong>تحميل قوالب مجانيه</strong> و<strong>تحميل ثيمات مجانيه</strong>: تحميل <strong>قوالب shopify مجانيه</strong> بديل آمن، بملفات أصلية 100% ومفحوصة أمنياً بترخيص GPL وبسعر مخفض جداً بالجنيه المصري. تحصل على نفس الملفات النظيفة من المطور بدون مخاطرة، مع تسليم رقمي فوري عبر البريد الإلكتروني وتوافق كامل مع فودافون كاش وانستاباي.
               </p>
             </div>
             <div className="space-y-3">
@@ -96,19 +96,19 @@ export const HomeSeoSections: React.FC<{ themesCount: number }> = ({ themesCount
             </div>
           </div>
 
-          {/* كلمات مفتاحية بارزة للأجهزة الذكية ومحركات البحث */}
+          {/* كلمات مفتاحية بارزة — بدون ادعاء مجانية: كلها GPL / أصلية */}
           <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
-            {['قوالب شوبيفاي مجاني', 'ثيمات شوبيفاي مجانيه', 'قوالب وردبريس مجاني', 'ثيمات مجانيه', 'قوالب shopify مجانيه', 'ثيمات شوبيفاي', 'قوالب shopify'].map((tag) => (
+            {['قوالب شوبيفاي GPL', 'ثيمات شوبيفاي الأصلية', 'قوالب وردبريس GPL', 'ثيمات ووردبريس الأصلية', 'قوالب ووكومرس', 'قوالب shopify الأصلية', 'ثيمات shopify الأصلية', 'قوالب GPL العربية'].map((tag) => (
               <span key={tag} className="text-[11px] font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
                 {tag}
               </span>
             ))}
           </div>
 
-          {/* روابط داخلية بكلمات مفتاحية (Internal Linking) */}
+          {/* روابط داخلية بكلمات مفتاحية (Internal Linking) — بدون ادعاء مجانية */}
           <nav aria-label="تصفح أقسام قوالب GPL" className="flex flex-wrap gap-2 pt-2">
-            <a href="/shopify" className="px-4 py-2 bg-[#0b132b] text-white text-xs font-bold rounded-xl hover:bg-[#1e293b] transition">قسم ثيمات شوبيفاي مجاني وقوالب Shopify</a>
-            <a href="/wordpress" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">تحميل قوالب وردبريس مجاني GPL</a>
+            <a href="/shopify" className="px-4 py-2 bg-[#0b132b] text-white text-xs font-bold rounded-xl hover:bg-[#1e293b] transition">قسم ثيمات شوبيفاي GPL وقوالب Shopify الأصلية</a>
+            <a href="/wordpress" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">تحميل قوالب وردبريس GPL الأصلية</a>
             <a href="/wordpress" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">ثيمات ووكومرس للمتاجر الإلكترونية</a>
             <a href="/catalog" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">كتالوج الثيمات والقوالب الكامل</a>
           </nav>

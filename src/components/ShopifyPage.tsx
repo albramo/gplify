@@ -188,13 +188,13 @@ export const ShopifyPage: React.FC<ShopifyPageProps> = ({
           <span>نسخ أصلية 100% — بديل آمن للنسخ المجانية المضروبة</span>
         </p>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0b132b] font-tajawal leading-snug">
-          تحميل ثيمات شوبيفاي مجاني بديل آمن | قوالب Shopify الأصلية
+          البديل الآمن لثيمات شوبيفاي المجانية | قوالب Shopify الأصلية
         </h1>
         <p className="text-sm text-slate-600 leading-loose max-w-3xl">
-          إذا كنت تبحث عن <strong>قوالب شوبيفاي مجاني</strong> أو <strong>ثيمات شوبيفاي مجانيه</strong>، و<strong>قوالب shopify مجانيه</strong>، فإن متجر gplify يوفر لك البديل الأكثر أماناً وضماناً للوطن العربي: أشهر <strong>ثيمات شوبيفاي</strong> و<strong>قوالب Shopify</strong> الأصلية 100% بترخيص GPL وبملفات نظيفة ومفحوصة أمنياً بديل النسخ المجهولة والمضروبة. تشتري مرة واحدة وبسعر رمزي بالجنيه المصري مع تسليم رقمي فوري لملفات ZIP على إيميلك واستخدام غير محدود على كل متاجرك.
+          إذا كنت تبحث عن <strong>قوالب شوبيفاي مجاني</strong> أو <strong>قوالب شوبيفاي مجانيه</strong> أو <strong>قوالب شوبيفاي مجانية</strong> و<strong>ثيمات شوبيفاي مجانيه</strong>، و<strong>قوالب shopify مجانيه</strong> و<strong>قوالب مجانيه</strong>، فإن متجر gplify يوفر لك البديل الأكثر أماناً وضماناً للوطن العربي: أشهر <strong>ثيمات شوبيفاي</strong> و<strong>قوالب Shopify</strong> الأصلية 100% بترخيص GPL وبملفات نظيفة ومفحوصة أمنياً بديل النسخ المجهولة والمضروبة. تشتري مرة واحدة وبسعر رمزي بالجنيه المصري مع تسليم رقمي فوري لملفات ZIP على إيميلك واستخدام غير محدود على كل متاجرك.
         </p>
         <div className="flex flex-wrap gap-2 pt-1 text-[11px] text-slate-500">
-          {['قوالب شوبيفاي مجاني', 'ثيمات شوبيفاي مجانيه', 'قوالب shopify مجانيه', 'ثيمات شوبيفاي gpl', 'قوالب شوبيفاي', 'قوالب shopify', 'ثيمات shopify'].map((k) => (
+          {['قوالب شوبيفاي GPL', 'ثيمات شوبيفاي الأصلية', 'قوالب Shopify الأصلية', 'ثيمات شوبيفاي gpl', 'قوالب شوبيفاي', 'قوالب shopify', 'ثيمات shopify'].map((k) => (
             <span key={k} className="px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 font-bold text-slate-600">
               {k}
             </span>
