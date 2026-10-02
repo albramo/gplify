@@ -55,19 +55,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* Sharp tag */}
           <p className="inline-flex items-center gap-2 bg-[#0b132b] text-white text-[11px] font-bold px-3 py-1.5">
             <span className="w-1.5 h-1.5 bg-emerald-400" aria-hidden="true" />
-            <span>نسخ أصلية 100% — من غير مفاتيح تفعيل</span>
+            <span>بديل آمن ومضمون للنسخ المجانية المضروبة — نسخ أصلية 100%</span>
           </p>
 
           {/* Main headline */}
           <h1 className="mt-5 text-3xl sm:text-5xl font-black text-[#0b132b] tracking-tight leading-[1.35]">
-            ثيمات شوبيفاي وووردبريس الأصلية
-            <span className="block text-[#1e3a8a]">ادفع مرة واحدة… واستخدمها على كل مواقعك</span>
+            ثيمات شوبيفاي وقوالب وردبريس الأصلية
+            <span className="block text-[#1e3a8a]">تحميل قوالب Shopify و WordPress بسعر رمزي كبديل آمن للمجاني المضروب</span>
           </h1>
 
           {/* Value proposition */}
           <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl mx-auto">
-            بنوفر لك أشهر قوالب شوبيفاي GPL وقوالب Shopify وثيمات ووردبريس بنسخها الكاملة الأصلية — من غير اشتراكات ومن غير حدود
-            على عدد المواقع والمتاجر. اطلب دلوقتي وروابط التحميل توصلك على إيميلك في ثواني.
+            نوفر لك أشهر ثيمات شوبيفاي وقوالب وردبريس وقوالب shopify بنسخها النظيفة والأصلية 100% — بدون اشتراكات أو حدود على عدد المتاجر والمواقع، وبسعر رمزى جداً بالجنيه المصري بديل النسخ المجانية الملغومة بالفيروسات.
           </p>
 
           {/* CTAs — sharp edges */}
