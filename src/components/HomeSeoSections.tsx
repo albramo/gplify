@@ -7,36 +7,36 @@ import React, { useEffect } from 'react';
  */
 const FAQ_ITEMS = [
   {
+    q: 'هل يمكن العثور على قوالب شوبيفاي مجاني أو قوالب وردبريس مجاني آمنة؟',
+    a: 'العديد من الأشخاص يبحثون عن قوالب شوبيفاي مجاني أو قوالب وردبريس مجاني وثيمات مجانيه، لكن معظم النسخ المتاحة مجاناً على منتديات النولد تكون ملغومة بفيروسات وأكواد خبيثة تضر متجرك وموقعك. في gplify نوفر لك القوالب الأصلية 100% برخصة GPL بسعر رمزى ورخيص جداً بديل النسخ المجانية المضروبة.',
+  },
+  {
+    q: 'كيف يمكنني تحميل ثيمات شوبيفاي وقوالب Shopify بسعر رمزي؟',
+    a: 'من خلال قسم ثيمات شوبيفاي وقوالب Shopify على gplify، يمكنك تصفح أشهر قوالب شوبيفاي العالمية ومعاينتها حياً، وعند الشراء يتم إرسال روابط تحميل ملفات ה-ZIP الأصلية فوراً إلى بريدك الإلكتروني بعد الدفع بفودافون كاش أو انستاباي.',
+  },
+  {
     q: 'هل كل القوالب على الموقع برخصة GPL؟',
     a: 'لا — معظم القوالب معروضة برخصة GPL قانونية (v2/v3)، لكن في منتجات تانية معروضة بدون رخصة. قبل ما تشتري أي قالب لازم تتأكد من صفحة المنتج نفسها: لو مذكور فيها نوع الرخصة يبقى مشمول بها، ولو مش مذكور أي رخصة يبقى المنتج بدون رخصة وبيتباع بحالته كما هو. ولو مش متأكد اسألنا من صفحة تواصل معنا قبل الدفع.',
   },
   {
     q: 'ما هي قوالب GPL وهل هي قانونية؟',
-    a: 'قوالب GPL هي ثيمات ووردبريس وإضافات أصلية مرخصة برخصة GNU العامة (GPL v2/v3) نفس رخصة الووردبريس نفسه. الرخصة بتديك حق قانوني كامل تستخدم القالب على عدد غير محدود من المواقع وتعدل عليه وتعيد توزيعه. ملاحظة مهمة: الكلام ده ينطبق على المنتجات اللي صفحتها مذكور فيها رخصة GPL فقط — راجع سؤال "هل كل القوالب برخصة GPL؟" فوق.',
+    a: 'قوالب GPL هي ثيمات ووردبريس وإضافات أصلية مرخصة برخصة GNU العامة (GPL v2/v3) نفس رخصة الووردبريس نفسه. الرخصة بتديك حق قانوني كامل تستخدم القالب على عدد غير محدود من المواقع وتعدل عليه وتعيد توزيعه.',
   },
   {
-    q: 'ازاي بحمل القالب بعد الشراء؟',
-    a: 'فور إتمام الدفع (فودافون كاش أو انستاباي) بيوصلك إيميل تلقائي فيه روابط التحميل المباشرة لملفات ZIP الأصلية زي ما هي بدون أي تعديل + الفاتورة. التسليم فوري في ثواني بدون انتظار.',
+    q: 'كيف أستلم روابط تحميل القالب بعد إتمام الطلب؟',
+    a: 'فور إتمام الدفع (فودافون كاش أو انستاباي) يصلك إيميل تلقائي فوراً يحتوي على روابط التحميل المباشرة لملفات ZIP الأصلية النظيفة 100% مع الفاتورة والتسليم فوري في ثوانٍ.',
   },
   {
-    q: 'هل القالب يشتغل على أكثر من موقع؟',
-    a: 'أيوه. بترخيص GPL تقدر تثبت أي قالب اشتريته من gplify على أي عدد مواقع ودومينات تملكها — مواقع عملاء، متاجر ووكومرس، مدونات — بدون رسوم إضافية أو اشتراك سنوي.',
+    q: 'هل يمكن استخدام قالب شوبيفاي أو ووردبريس على أكثر من متجر وموقع؟',
+    a: 'نعم! بترخيص GPL يمكنك تركيب القالب على أي عدد من المتاجر والمواقع والدومينات الخاصة بك أو بعملائك دون أي رسوم إضافية أو اشتراكات سنوية.',
   },
   {
-    q: 'هل الملفات نظيفة وآمنة؟',
-    a: 'كل قالب بيعدي على فحص أمني كامل قبل رفعه: كود أصلي من المطور، بدون فيروسات أو روابط خبيثة أو إعلانات مخفية. وبنعرض أحدث إصدار متوفر من المطور وقت إضافة القالب للكتالوج.',
+    q: 'هل الملفات والقوالب آمنة ومفحوصة؟',
+    a: 'نعم، كل القوالب والثيمات تمر بفحص أمني دقيق للتأكد من أنها أصلية ومطابقة لملفات المطور بدون أي تعديل أو أكواد إعلانية أو خبيثة.',
   },
   {
-    q: 'ايه الفرق بين الشراء منكم ومن المطور الأصلي؟',
-    a: 'نفس الملف الأصلي بالظبط بدون أي تعديل، لكن بسعر أقل بكتير لأنك بتشتري برخصة GPL بدل رخصة الموقع الواحد الغالية. الفرق الوحيد: الدعم المباشر من المطور بيكون للمشترين من موقعه، واحنا بنعوض ده بتوجيه للتنصيب والتفعيل.',
-  },
-  {
-    q: 'هل عندكم ثيمات شوبيفاي GPL؟',
-    a: 'أيوه — عندنا قسم كامل لثيمات شوبيفاي وقوالب Shopify الأصلية بنسخ نظيفة 100% بسعر رخيص بالجنيه المصري مع تسليم فوري عبر البريد. افتح صفحة ثيمات شوبيفاي من القائمة واختار قالبك وشوف الديمو قبل الشراء.',
-  },
-  {
-    q: 'بتدعموا الدفع في مصر؟',
-    a: 'أيوه — الدفع بفودافون كاش وانستاباي، والأسعار كلها بالجنيه المصري بدون رسوم خفية. بعد التحويل بتأكد الطلب وبيوصلك التحميل على إيميلك فورا.',
+    q: 'ما هي وسائل الدفع المتاحة في مصر والوطن العربي؟',
+    a: 'ندعم الدفع المباشر بالجنيه المصري عبر فودافون كاش Vodafone Cash وانستاباي InstaPay، والأسعار مناسبة جداً لجميع الشباب والشركات والمتاجر في مصر والعالم العربي.',
   },
 ];
 
@@ -66,46 +66,51 @@ export const HomeSeoSections: React.FC<{ themesCount: number }> = ({ themesCount
   return (
     <>
       {/* 1) محتوى تعريفي غني بالكلمات المفتاحية */}
-      <section aria-label="دليل تحميل قوالب GPL بالعربي" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <section aria-label="دليل تحميل قوالب GPL وقوالب شوبيفاي ووردبريس بالعربي" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 space-y-6 shadow-xs">
           <div className="max-w-3xl">
-            <p className="text-xs font-bold text-[#1e3a8a] mb-2">ثيمات شوبيفاي GPL وقوالب Shopify — متجر GPL العربي في مصر</p>
+            <p className="text-xs font-bold text-[#1e3a8a] mb-2">ثيمات شوبيفاي مجانيه وقوالب وردبريس مجاني — أفضل بديل آمن لمتاجر العرب</p>
             <h2 className="text-xl sm:text-2xl font-extrabold text-[#0b132b] font-tajawal leading-relaxed">
-              تحميل ثيمات شوبيفاي GPL وقوالب Shopify وثيمات ووردبريس الأصلية
+              تحميل قوالب شوبيفاي مجاني بديل آمن وقوالب وردبريس مجاني وثيمات shopify الأصلية
             </h2>
           </div>
           <div className="grid md:grid-cols-2 gap-6 text-sm text-slate-600 leading-loose">
             <div className="space-y-3">
-              <h3 className="font-bold text-[#0b132b]">ليه تشتري قوالب GPL من gplify؟</h3>
+              <h3 className="font-bold text-[#0b132b]">لماذا تبحث عن البديل المضمون للنسخ المجانية المضروبة؟</h3>
               <p>
-                لو بتدور على <strong>ثيمات شوبيفاي GPL</strong> أو <strong>قوالب شوبيفاي</strong> بسعر رخيص، فـ gplify معمول مخصوص ليك: بنجمع لك أشهر{' '}
-                <strong>قوالب Shopify</strong> و<strong>ثيمات Shopify</strong> العالمية بنسخ <strong>GPL</strong> أصلية
-                100% — بديل آمن ومضمون للنسخ <strong>المجانية</strong> المضروبة — وبسعر أقل من 10% من سعر المطور. كل القوالب عندنا مفحوصة أمنيا، محدثة لآخر إصدار،
-                وتشتغل على عدد غير محدود من المواقع والمتاجر.
+                كثير من أصحاب المتاجر والمواقع يبحثون عن <strong>قوالب شوبيفاي مجاني</strong> أو <strong>ثيمات شوبيفاي مجانيه</strong>، و<strong>قوالب وردبريس مجاني</strong> و<strong>ثيمات مجانيه</strong> على الإنترنت، ولكن الصدمة تكون بوجود فيروسات، برمجيات خبيثة، وأكواد تجسس تؤدي لإغلاق المتجر أو حظر الدومين في محركات البحث.
               </p>
               <p>
-                سواء عندك متجر شوبيفاي، متجر ووكومرس، مدونة، موقع شركة أو بورتفوليو — هتلاقي{' '}
-                <strong>تحميل قوالب شوبيفاي</strong> و<strong>تحميل قوالب ووردبريس</strong> المناسبة لمشروعك مع معاينة حية (Live Demo) قبل الشراء، وتسليم فوري
-                لملف ZIP على إيميلك بعد الدفع بفودافون كاش أو انستاباي.
+                في متجر <strong>gplify</strong> المخصص للوطن العربي ومصر، نوفر لك الحل الأمثل: تحميل <strong>قوالب shopify مجانيه</strong> بديل آمن، بملفات أصلية 100% ومفحوصة أمنياً بترخيص GPL وبسعر مخفض جداً بالجنيه المصري. تحصل على نفس الملفات النظيفة من المطور بدون مخاطرة، مع تسليم رقمي فوري عبر البريد الإلكتروني وتوافق كامل مع فودافون كاش وانستاباي.
               </p>
             </div>
             <div className="space-y-3">
-              <h3 className="font-bold text-[#0b132b]">ايه اللي بيخلي ملفاتنا مضمونة؟</h3>
+              <h3 className="font-bold text-[#0b132b]">مميزات تحميل القوالب والثيمات من gplify</h3>
               <ul className="space-y-2">
-                <li className="flex gap-2"><span className="text-emerald-600 font-bold">✓</span><span><strong>ملفات أصلية غير معدلة:</strong> نفس كود المطور بدون حقن أو إعلانات.</span></li>
-                <li className="flex gap-2"><span className="text-emerald-600 font-bold">✓</span><span><strong>ترخيص GPL v2/v3 قانوني:</strong> استخدام وتعديل لعدد لا نهائي من الدومينات.</span></li>
-                <li className="flex gap-2"><span className="text-emerald-600 font-bold">✓</span><span><strong>أحدث إصدار متوفر:</strong> بنعرض آخر إصدار متاح من المطور وقت إضافة القالب ({themesCount > 0 ? `الكتالوج حاليا فيه ${themesCount} قالب` : 'كتالوج متجدد باستمرار'}).</span></li>
-                <li className="flex gap-2"><span className="text-emerald-600 font-bold">✓</span><span><strong>تسليم فوري:</strong> رابط التحميل بيوصلك على البريد في ثواني، والملفات زي الأصلية بالظبط بدون أي تعديل.</span></li>
-                <li className="flex gap-2"><span className="text-emerald-600 font-bold">✓</span><span><strong>دفع مصري سهل:</strong> فودافون كاش وانستاباي والأسعار بالجنيه المصري.</span></li>
+                <li className="flex gap-2"><span className="text-emerald-600 font-bold">✓</span><span><strong>بديل آمن للنسخ المجانية المضروبة:</strong> ملفات أصلية 100% بدون أي تعديل أو فيروسات.</span></li>
+                <li className="flex gap-2"><span className="text-emerald-600 font-bold">✓</span><span><strong>استخدام غير محدود:</strong> رخصة GPL تمنحك حق استخدام القالب على جميع متاجرك ومواقعك.</span></li>
+                <li className="flex gap-2"><span className="text-emerald-600 font-bold">✓</span><span><strong>تحديثات مستمرة وكتالوج متجدد:</strong> نحدث القوالب لأحدث الإصدارات العالمية ({themesCount > 0 ? `يتوفر حالياً ${themesCount} قالب أصلي` : 'كتالوج يتحدث باستمرار'}).</span></li>
+                <li className="flex gap-2"><span className="text-emerald-600 font-bold">✓</span><span><strong>تسليم آلي وفوري:</strong> يصلك رابط التحميل لملف ZIP في ثوانٍ معدودة عقب إتمام الدفع.</span></li>
+                <li className="flex gap-2"><span className="text-emerald-600 font-bold">✓</span><span><strong>طرق دفع عربية ميسرة:</strong> دعم كامل لفودافون كاش وانستاباي بالجنيه المصري.</span></li>
               </ul>
             </div>
           </div>
+
+          {/* كلمات مفتاحية بارزة للأجهزة الذكية ومحركات البحث */}
+          <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+            {['قوالب شوبيفاي مجاني', 'ثيمات شوبيفاي مجانيه', 'قوالب وردبريس مجاني', 'ثيمات مجانيه', 'قوالب shopify مجانيه', 'ثيمات شوبيفاي', 'قوالب shopify'].map((tag) => (
+              <span key={tag} className="text-[11px] font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+                {tag}
+              </span>
+            ))}
+          </div>
+
           {/* روابط داخلية بكلمات مفتاحية (Internal Linking) */}
           <nav aria-label="تصفح أقسام قوالب GPL" className="flex flex-wrap gap-2 pt-2">
-            <a href="/shopify" className="px-4 py-2 bg-[#0b132b] text-white text-xs font-bold rounded-xl hover:bg-[#1e293b] transition">ثيمات شوبيفاي GPL — قوالب Shopify</a>
-            <a href="/wordpress" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">تحميل قوالب ووردبريس GPL</a>
-            <a href="/wordpress" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">ثيمات ووكومرس للمتاجر</a>
-            <a href="/catalog" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">قوالب الشركات والبورتفوليو</a>
+            <a href="/shopify" className="px-4 py-2 bg-[#0b132b] text-white text-xs font-bold rounded-xl hover:bg-[#1e293b] transition">قسم ثيمات شوبيفاي مجاني وقوالب Shopify</a>
+            <a href="/wordpress" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">تحميل قوالب وردبريس مجاني GPL</a>
+            <a href="/wordpress" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">ثيمات ووكومرس للمتاجر الإلكترونية</a>
+            <a href="/catalog" className="px-4 py-2 bg-slate-100 text-[#0b132b] text-xs font-bold rounded-xl border border-slate-200 hover:border-[#0b132b] transition">كتالوج الثيمات والقوالب الكامل</a>
           </nav>
         </div>
       </section>

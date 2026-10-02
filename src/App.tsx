@@ -451,20 +451,20 @@ export default function App() {
         const { setStaticHead } = await import('./lib/seo');
         if (currentView === 'catalog') {
           setStaticHead({
-            title: 'تحميل قوالب GPL | كتالوج ثيمات ووردبريس وشوبيفاي الأصلية - gplify',
-            description: 'تصفح كتالوج قوالب GPL الأصلية: ثيمات ووردبريس GPL، قوالب ووكومرس، ثيمات شوبيفاي GPL وقوالب Shopify — معاينة حية وتحميل فوري بترخيص GPL قانوني.',
+            title: 'كتالوج القوالب | ثيمات شوبيفاي مجاني وقوالب وردبريس مجاني - gplify',
+            description: 'تصفح كتالوج القوالب الأصلية: ثيمات شوبيفاي مجانيه وقوالب shopify مجانيه، ثيمات وردبريس مجاني وقوالب ووكومرس — معاينة حية وتحميل فوري.',
             path: '/catalog',
           });
         } else if (currentView === 'shopify') {
           setStaticHead({
-            title: 'ثيمات شوبيفاي GPL | تحميل قوالب Shopify الأصلية بسعر مخفض - gplify',
-            description: 'تحميل ثيمات شوبيفاي وقوالب Shopify الأصلية بنسخ نظيفة بسعر رخيص بديل النسخ المجانية — تسليم فوري عبر البريد والدفع فودافون كاش وانستاباي.',
+            title: 'ثيمات شوبيفاي مجاني | تحميل قوالب shopify مجانيه بديل آمن - gplify',
+            description: 'تحميل ثيمات شوبيفاي مجاني وقوالب shopify مجانيه وثيمات مجانيه أصلية 100% بديل النسخ المضروبة — تسليم فوري عبر البريد والدفع فودافون كاش وانستاباي.',
             path: '/shopify',
           });
         } else if (currentView === 'wordpress') {
           setStaticHead({
-            title: 'ثيمات ووردبريس GPL | تحميل قوالب WordPress وووكومرس الأصلية - gplify',
-            description: 'تحميل ثيمات ووردبريس وقوالب WordPress وووكومرس المتوافقة مع إليمنتور بنسخ GPL أصلية بسعر رخيص بديل النسخ المجانية — تسليم فوري عبر البريد والدفع فودافون كاش وانستاباي.',
+            title: 'قوالب وردبريس مجاني | تحميل ثيمات مجانيه ووردبريس الأصلية - gplify',
+            description: 'تحميل قوالب وردبريس مجاني وثيمات مجانيه وقوالب ووكومرس وإليمنتور أصلية 100% بديل النسخ المضروبة — تسليم فوري عبر البريد والدفع فودافون كاش وانستاباي.',
             path: '/wordpress',
           });
         } else if (currentView === 'cart') {
@@ -488,15 +488,15 @@ export default function App() {
           });
         } else {
           setStaticHead({
-            title: 'ثيمات شوبيفاي | تحميل قوالب Shopify الأصلية بسعر مخفض - gplify',
-            description: 'تحميل ثيمات شوبيفاي وقوالب Shopify الأصلية، وثيمات ووردبريس وقوالب ووكومرس — نسخ نظيفة 100% وتسليم فوري عبر البريد بالجنيه المصري.',
+            title: 'ثيمات شوبيفاي وقوالب وردبريس | تحميل قوالب Shopify و WordPress الأصلية - gplify',
+            description: 'تحميل ثيمات شوبيفاي مجاني وقوالب وردبريس مجاني وقوالب shopify وثيمات مجانيه أصلية 100% بديل النسخ المضروبة — تسليم فوري عبر البريد والدفع فودافون كاش وانستاباي بالجنيه المصري.',
             path: '/',
           });
         }
       } catch {
-        if (currentView === 'catalog') document.title = 'تحميل قوالب GPL | كتالوج ثيمات ووردبريس وشوبيفاي - gplify';
-        else if (currentView === 'shopify') document.title = 'ثيمات شوبيفاي GPL | تحميل قوالب شوبيفاي وقوالب Shopify - gplify';
-        else if (currentView === 'wordpress') document.title = 'ثيمات ووردبريس GPL | تحميل قوالب WordPress وووكومرس - gplify';
+        if (currentView === 'catalog') document.title = 'كتالوج القوالب | ثيمات شوبيفاي مجاني وقوالب وردبريس مجاني - gplify';
+        else if (currentView === 'shopify') document.title = 'ثيمات شوبيفاي مجاني | تحميل قوالب shopify مجانيه بديل آمن - gplify';
+        else if (currentView === 'wordpress') document.title = 'قوالب وردبريس مجاني | تحميل ثيمات مجانيه ووردبريس الأصلية - gplify';
         else if (currentView === 'cart') document.title = 'سلة التسوق | gplify';
         else if (currentView === 'contact') document.title = 'تواصل معنا | gplify';
         else if (currentView === 'terms') document.title = 'شروط الاستخدام | gplify';
